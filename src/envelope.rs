@@ -9,7 +9,7 @@ use crate::FailureMetadata;
 
 /// A JSON-safe representation of an error.
 ///
-/// The shape mirrors the stable concepts in the Python DataExcept envelope:
+/// The shape mirrors the stable concepts in the Python `DataExcept` envelope:
 /// type, module, message, public attributes, recovery metadata, cause/context
 /// chains, and grouped errors.
 #[derive(Debug, Clone, PartialEq, Serialize, Deserialize)]
