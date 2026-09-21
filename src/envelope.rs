@@ -142,8 +142,8 @@ mod tests {
     #[test]
     fn preserves_nested_causes() {
         let cause = ErrorEnvelope::new("IoError", "std::io", "connection refused");
-        let root = ErrorEnvelope::new("DataLoadingError", "example", "load failed")
-            .with_cause(cause);
+        let root =
+            ErrorEnvelope::new("DataLoadingError", "example", "load failed").with_cause(cause);
 
         let value = serde_json::to_value(root).expect("envelope should serialize");
         assert_eq!(value["cause"]["type"], "IoError");
