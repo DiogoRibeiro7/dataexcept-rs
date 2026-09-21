@@ -68,9 +68,7 @@ impl FailureMetadata {
     ///
     /// Returns [`InvalidFailureMetadata`] when `retry_after_seconds` is
     /// negative, NaN, or infinite.
-    pub fn transient(
-        retry_after_seconds: Option<f64>,
-    ) -> Result<Self, InvalidFailureMetadata> {
+    pub fn transient(retry_after_seconds: Option<f64>) -> Result<Self, InvalidFailureMetadata> {
         Self::new(FailureKind::Transient, Some(true), retry_after_seconds)
     }
 
