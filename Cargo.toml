@@ -1,0 +1,30 @@
+[package]
+name = "dataexcept"
+version = "0.1.0"
+edition = "2024"
+rust-version = "1.85"
+authors = ["Diogo Ribeiro"]
+description = "Structured errors and failure observability for data, ML, and data-engineering systems"
+license = "MIT"
+repository = "https://github.com/DiogoRibeiro7/dataexcept-rs"
+homepage = "https://github.com/DiogoRibeiro7/dataexcept-rs"
+documentation = "https://docs.rs/dataexcept"
+readme = "README.md"
+keywords = ["errors", "observability", "data", "ml", "serialization"]
+categories = ["rust-patterns", "development-tools::debugging"]
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+
+[dev-dependencies]
+serde_json = "1"
+
+[lints.rust]
+unsafe_code = "forbid"
+missing_docs = "warn"
+
+[lints.clippy]
+all = "warn"
+pedantic = "warn"
