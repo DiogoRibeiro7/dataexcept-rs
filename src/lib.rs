@@ -1,6 +1,6 @@
 //! Structured errors and failure observability for Rust.
 //!
-//! `dataexcept` is the Rust companion to the Python DataExcept project. The
+//! `dataexcept` is the Rust companion to the Python `DataExcept` project. The
 //! crate starts with the language-neutral parts of that contract: failure
 //! metadata and JSON-safe error envelopes.
 
