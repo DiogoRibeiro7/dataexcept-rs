@@ -5,9 +5,11 @@
 //! metadata and JSON-safe error envelopes.
 
 pub mod data;
+pub mod database;
 mod envelope;
 mod error;
 mod failure;
+pub mod network;
 pub mod redaction;
 pub mod schema;
 pub mod transformation;
@@ -16,9 +18,11 @@ pub use data::{
     DataFormatError, DataLoadingError, DataValidationError, MissingColumnError, MissingDataError,
     SchemaMismatchError,
 };
+pub use database::{DatabaseConnectionError, QueryExecutionError, TransactionError};
 pub use envelope::ErrorEnvelope;
 pub use error::DataError;
 pub use failure::{FailureKind, FailureMetadata, InvalidFailureMetadata};
+pub use network::{ConnectionTimeoutError, HostUnreachableError, ProtocolError};
 pub use redaction::{
     fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
 };
