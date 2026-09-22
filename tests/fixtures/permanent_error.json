@@ -1,0 +1,13 @@
+{
+  "type": "missing_column",
+  "module": "pipeline::validation",
+  "message": "customer_id is required",
+  "attributes": {
+    "column": "customer_id"
+  },
+  "failure": {
+    "kind": "permanent",
+    "retryable": false,
+    "retry_after_seconds": null
+  }
+}
