@@ -5,7 +5,10 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
-use crate::FailureMetadata;
+use crate::{
+    redaction::{redact_attributes, redact_urls_in_text},
+    FailureMetadata,
+};
 
 /// A JSON-safe representation of an error.
 ///
@@ -46,10 +49,12 @@ impl ErrorEnvelope {
         module: impl Into<String>,
         message: impl Into<String>,
     ) -> Self {
+        let message = message.into();
+
         Self {
             error_type: error_type.into(),
             module: module.into(),
-            message: message.into(),
+            message: redact_urls_in_text(&message, false),
             attributes: None,
             failure: None,
             cause: None,
@@ -62,7 +67,7 @@ impl ErrorEnvelope {
     #[must_use]
     pub fn with_attributes(mut self, attributes: BTreeMap<String, Value>) -> Self {
         if !attributes.is_empty() {
-            self.attributes = Some(attributes);
+            self.attributes = Some(redact_attributes(&attributes, false));
         }
         self
     }
@@ -118,6 +123,10 @@ impl ErrorEnvelope {
 
 #[cfg(test)]
 mod tests {
+    use std::collections::BTreeMap;
+
+    use serde_json::json;
+
     use super::ErrorEnvelope;
     use crate::FailureMetadata;
 
@@ -147,5 +156,32 @@ mod tests {
 
         let value = serde_json::to_value(root).expect("envelope should serialize");
         assert_eq!(value["cause"]["type"], "IoError");
+    }
+
+    #[test]
+    fn export_redacts_url_path_and_credentials() {
+        let mut attributes = BTreeMap::new();
+        attributes.insert(
+            "endpoint".to_owned(),
+            json!("https://user:secret@example.com/webhook/path?token=SECRETVALUE"),
+        );
+
+        let envelope = ErrorEnvelope::new(
+            "WebhookError",
+            "example",
+            "POST https://user:secret@example.com/webhook/path?token=SECRETVALUE failed",
+        )
+        .with_attributes(attributes);
+
+        let value = serde_json::to_value(envelope).expect("envelope should serialize");
+
+        assert_eq!(
+            value["message"],
+            "POST https://***:***@example.com/***?token=*** failed"
+        );
+        assert_eq!(
+            value["attributes"]["endpoint"],
+            "https://***:***@example.com/***?token=***"
+        );
     }
 }
