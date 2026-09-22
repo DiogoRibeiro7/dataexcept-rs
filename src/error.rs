@@ -5,8 +5,8 @@ use std::{collections::BTreeMap, error::Error, fmt};
 use serde_json::Value;
 
 use crate::{
-    redaction::{redact_json_value, redact_urls_in_text},
     ErrorEnvelope, FailureMetadata,
+    redaction::{redact_json_value, redact_urls_in_text},
 };
 
 /// A small, structured operational error suitable for application boundaries.
