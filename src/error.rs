@@ -4,7 +4,10 @@ use std::{collections::BTreeMap, error::Error, fmt};
 
 use serde_json::Value;
 
-use crate::{ErrorEnvelope, FailureMetadata};
+use crate::{
+    ErrorEnvelope, FailureMetadata,
+    redaction::{redact_json_value, redact_urls_in_text},
+};
 
 /// A small, structured operational error suitable for application boundaries.
 ///
@@ -25,9 +28,11 @@ impl DataError {
     /// Creates an unclassified operational error.
     #[must_use]
     pub fn new(code: impl Into<String>, message: impl Into<String>) -> Self {
+        let message = message.into();
+
         Self {
             code: code.into(),
-            message: message.into(),
+            message: redact_urls_in_text(&message, true),
             module: "dataexcept".to_owned(),
             attributes: BTreeMap::new(),
             failure: FailureMetadata::unknown(),
@@ -44,7 +49,8 @@ impl DataError {
     /// Adds one structured attribute.
     #[must_use]
     pub fn with_attribute(mut self, key: impl Into<String>, value: Value) -> Self {
-        self.attributes.insert(key.into(), value);
+        self.attributes
+            .insert(key.into(), redact_json_value(value, true));
         self
     }
 
@@ -102,6 +108,39 @@ mod tests {
                 .expect("attributes should exist")
                 .get("column"),
             Some(&json!("customer_id"))
+        );
+    }
+
+    #[test]
+    fn display_redacts_url_credentials() {
+        let error = DataError::new(
+            "request_failed",
+            "GET https://user:secret@example.com/v1?token=SECRETVALUE failed",
+        );
+
+        let rendered = error.to_string();
+
+        assert!(!rendered.contains("secret"));
+        assert!(!rendered.contains("SECRETVALUE"));
+        assert!(rendered.contains("example.com"));
+        assert!(rendered.contains("/v1"));
+    }
+
+    #[test]
+    fn attributes_redact_nested_url_credentials() {
+        let error = DataError::new("request_failed", "request failed").with_attribute(
+            "request",
+            json!({
+                "endpoint": "https://example.com/v1?api_key=SECRETVALUE",
+            }),
+        );
+
+        let envelope = error.to_envelope();
+        let attributes = envelope.attributes.expect("attributes should exist");
+
+        assert_eq!(
+            attributes["request"]["endpoint"],
+            "https://example.com/***?api_key=***"
         );
     }
 }

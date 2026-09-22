@@ -12,7 +12,7 @@
 - [x] Formatting, Clippy, tests, and documentation in CI
 - [x] Validate emitted envelopes against the canonical DataExcept JSON Schema
 - [x] Add cross-language fixtures shared with the Python implementation
-- [ ] Credential-bearing URL redaction compatible with DataExcept
+- [x] Credential-bearing URL redaction compatible with DataExcept
 
 ## 0.2 — Domain errors
 
