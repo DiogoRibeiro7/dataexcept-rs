@@ -17,7 +17,7 @@
 ## 0.2 — Domain errors
 
 - [x] Data ingestion and validation errors
-- [ ] Schema and transformation errors
+- [x] Schema and transformation errors
 - [ ] Database and network errors
 - [ ] Message-broker errors
 - [ ] ML training, inference, and evaluation errors
