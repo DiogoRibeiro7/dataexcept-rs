@@ -5,10 +5,11 @@
 //! sensitive query parameters, sensitive fragment parameters, and free-form
 //! text containing URLs.
 
-use std::sync::OnceLock;
+use std::{collections::BTreeMap, sync::OnceLock};
 
 use form_urlencoded::Serializer;
 use regex::Regex;
+use serde_json::Value;
 use sha2::{Digest, Sha256};
 
 /// Visible marker used in place of credentials.
@@ -266,6 +267,36 @@ pub fn redact_urls_in_text(text: &str, keep_path: bool) -> String {
         .into_owned()
 }
 
+
+pub(crate) fn redact_json_value(value: &Value, keep_path: bool) -> Value {
+    match value {
+        Value::String(text) => Value::String(redact_urls_in_text(text, keep_path)),
+        Value::Array(values) => Value::Array(
+            values
+                .iter()
+                .map(|item| redact_json_value(item, keep_path))
+                .collect(),
+        ),
+        Value::Object(values) => Value::Object(
+            values
+                .iter()
+                .map(|(key, item)| (key.clone(), redact_json_value(item, keep_path)))
+                .collect(),
+        ),
+        _ => value.clone(),
+    }
+}
+
+pub(crate) fn redact_attributes(
+    attributes: &BTreeMap<String, Value>,
+    keep_path: bool,
+) -> BTreeMap<String, Value> {
+    attributes
+        .iter()
+        .map(|(key, value)| (key.clone(), redact_json_value(value, keep_path)))
+        .collect()
+}
+
 #[cfg(test)]
 mod tests {
     use super::{fingerprint, redact_secret, redact_url, redact_urls_in_text, remove_secret};
@@ -279,10 +310,7 @@ mod tests {
     fn redact_secret_handles_empty_and_present_values() {
         assert_eq!(redact_secret(None), None);
         assert_eq!(redact_secret(Some("")), Some("***".to_owned()));
-        assert_eq!(
-            redact_secret(Some("secret")),
-            Some("***(" .to_owned() + "2bb80d53" + ")")
-        );
+        assert_eq!(redact_secret(Some("secret")), Some("***\(2bb80d53\)".replace("\\", "")));
     }
 
     #[test]
