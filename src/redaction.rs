@@ -1,4 +1,4 @@
-//! Credential redaction compatible with the DataExcept wire contract.
+//! Credential redaction compatible with the `DataExcept` wire contract.
 //!
 //! The helpers in this module preserve operational context such as URL scheme,
 //! host, port, and optionally path while removing credentials from userinfo,
@@ -263,32 +263,32 @@ pub fn redact_urls_in_text(text: &str, keep_path: bool) -> String {
         .into_owned()
 }
 
-pub(crate) fn redact_json_value(value: &Value, keep_path: bool) -> Value {
+pub(crate) fn redact_json_value(value: Value, keep_path: bool) -> Value {
     match value {
-        Value::String(text) => Value::String(redact_urls_in_text(text, keep_path)),
+        Value::String(text) => Value::String(redact_urls_in_text(&text, keep_path)),
         Value::Array(values) => Value::Array(
             values
-                .iter()
+                .into_iter()
                 .map(|item| redact_json_value(item, keep_path))
                 .collect(),
         ),
         Value::Object(values) => Value::Object(
             values
-                .iter()
-                .map(|(key, item)| (key.clone(), redact_json_value(item, keep_path)))
+                .into_iter()
+                .map(|(key, item)| (key, redact_json_value(item, keep_path)))
                 .collect(),
         ),
-        _ => value.clone(),
+        other => other,
     }
 }
 
 pub(crate) fn redact_attributes(
-    attributes: &BTreeMap<String, Value>,
+    attributes: BTreeMap<String, Value>,
     keep_path: bool,
 ) -> BTreeMap<String, Value> {
     attributes
-        .iter()
-        .map(|(key, value)| (key.clone(), redact_json_value(value, keep_path)))
+        .into_iter()
+        .map(|(key, value)| (key, redact_json_value(value, keep_path)))
         .collect()
 }
 
