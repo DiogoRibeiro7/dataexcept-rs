@@ -309,7 +309,7 @@ mod tests {
     fn redact_secret_handles_empty_and_present_values() {
         assert_eq!(redact_secret(None), None);
         assert_eq!(redact_secret(Some("")), Some("***".to_owned()));
-        assert_eq!(redact_secret(Some("secret")), Some("***\(2bb80d53\)".replace("\\", "")));
+        assert_eq!(redact_secret(Some("secret")), Some("***(2bb80d53)".to_owned()));
     }
 
     #[test]
