@@ -6,8 +6,8 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 
 use crate::{
-    redaction::{redact_attributes, redact_urls_in_text},
     FailureMetadata,
+    redaction::{redact_attributes, redact_urls_in_text},
 };
 
 /// A JSON-safe representation of an error.
