@@ -22,11 +22,7 @@ pub struct DtypeMismatchError {
 impl DtypeMismatchError {
     /// Creates a data-type mismatch error.
     #[must_use]
-    pub fn new<I, S>(
-        column: impl Into<String>,
-        expected: I,
-        found: impl Into<String>,
-    ) -> Self
+    pub fn new<I, S>(column: impl Into<String>, expected: I, found: impl Into<String>) -> Self
     where
         I: IntoIterator<Item = S>,
         S: Into<String>,
@@ -212,9 +208,7 @@ impl From<SchemaEvolutionError> for DataError {
 
 #[cfg(test)]
 mod tests {
-    use super::{
-        DtypeMismatchError, IndexAlignmentError, MergeKeyError, SchemaEvolutionError,
-    };
+    use super::{DtypeMismatchError, IndexAlignmentError, MergeKeyError, SchemaEvolutionError};
     use crate::DataError;
 
     #[test]
@@ -250,10 +244,8 @@ mod tests {
 
     #[test]
     fn schema_evolution_carries_reason() {
-        let error = SchemaEvolutionError::new(
-            "v2.1",
-            Some("incompatible column type change".to_owned()),
-        );
+        let error =
+            SchemaEvolutionError::new("v2.1", Some("incompatible column type change".to_owned()));
 
         assert_eq!(
             error.to_string(),
