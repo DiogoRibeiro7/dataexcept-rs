@@ -10,8 +10,8 @@
 - [x] Cause, context, and grouped-error representation
 - [x] Minimal idiomatic Rust operational error type
 - [x] Formatting, Clippy, tests, and documentation in CI
-- [ ] Validate emitted envelopes against the canonical DataExcept JSON Schema
-- [ ] Add cross-language fixtures shared with the Python implementation
+- [x] Validate emitted envelopes against the canonical DataExcept JSON Schema
+- [x] Add cross-language fixtures shared with the Python implementation
 - [ ] Credential-bearing URL redaction compatible with DataExcept
 
 ## 0.2 — Domain errors
