@@ -171,10 +171,8 @@ mod tests {
 
     #[test]
     fn connection_error_redacts_database_credentials() {
-        let error = DatabaseConnectionError::new(
-            "postgresql://admin:hunter2@prod-db:5432/analytics",
-            None,
-        );
+        let error =
+            DatabaseConnectionError::new("postgresql://admin:hunter2@prod-db:5432/analytics", None);
 
         assert!(!error.db_url.contains("hunter2"));
         assert!(error.db_url.contains("prod-db:5432"));
@@ -210,10 +208,7 @@ mod tests {
     fn transaction_error_uses_identifier_in_default_message() {
         let error = TransactionError::new(Some("txn-42".to_owned()), None, None);
 
-        assert_eq!(
-            error.to_string(),
-            "Database transaction failed (id=txn-42)"
-        );
+        assert_eq!(error.to_string(), "Database transaction failed (id=txn-42)");
     }
 
     #[test]
