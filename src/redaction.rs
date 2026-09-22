@@ -267,7 +267,6 @@ pub fn redact_urls_in_text(text: &str, keep_path: bool) -> String {
         .into_owned()
 }
 
-
 pub(crate) fn redact_json_value(value: &Value, keep_path: bool) -> Value {
     match value {
         Value::String(text) => Value::String(redact_urls_in_text(text, keep_path)),
