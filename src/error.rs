@@ -50,7 +50,7 @@ impl DataError {
     #[must_use]
     pub fn with_attribute(mut self, key: impl Into<String>, value: Value) -> Self {
         self.attributes
-            .insert(key.into(), redact_json_value(&value, true));
+            .insert(key.into(), redact_json_value(value, true));
         self
     }
 
