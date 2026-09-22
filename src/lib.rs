@@ -9,6 +9,8 @@ mod envelope;
 mod error;
 mod failure;
 pub mod redaction;
+pub mod schema;
+pub mod transformation;
 
 pub use data::{
     DataFormatError, DataLoadingError, DataValidationError, MissingColumnError, MissingDataError,
@@ -20,6 +22,8 @@ pub use failure::{FailureKind, FailureMetadata, InvalidFailureMetadata};
 pub use redaction::{
     fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
 };
+pub use schema::{DtypeMismatchError, IndexAlignmentError, MergeKeyError, SchemaEvolutionError};
+pub use transformation::{DataNormalizationError, DataTransformationError, FeatureEngineeringError};
 
 /// Convenient result alias for operations that use [`DataError`].
 pub type Result<T> = std::result::Result<T, DataError>;
