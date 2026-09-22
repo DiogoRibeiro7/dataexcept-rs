@@ -18,7 +18,7 @@
 
 - [x] Data ingestion and validation errors
 - [x] Schema and transformation errors
-- [ ] Database and network errors
+- [x] Database and network errors
 - [ ] Message-broker errors
 - [ ] ML training, inference, and evaluation errors
 - [ ] Conversion helpers for common Rust ecosystem error types
