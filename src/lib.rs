@@ -4,11 +4,16 @@
 //! crate starts with the language-neutral parts of that contract: failure
 //! metadata and JSON-safe error envelopes.
 
+pub mod data;
 mod envelope;
 mod error;
 mod failure;
 pub mod redaction;
 
+pub use data::{
+    DataFormatError, DataLoadingError, DataValidationError, MissingColumnError, MissingDataError,
+    SchemaMismatchError,
+};
 pub use envelope::ErrorEnvelope;
 pub use error::DataError;
 pub use failure::{FailureKind, FailureMetadata, InvalidFailureMetadata};
