@@ -67,7 +67,7 @@ impl ErrorEnvelope {
     #[must_use]
     pub fn with_attributes(mut self, attributes: BTreeMap<String, Value>) -> Self {
         if !attributes.is_empty() {
-            self.attributes = Some(redact_attributes(&attributes, false));
+            self.attributes = Some(redact_attributes(attributes, false));
         }
         self
     }
