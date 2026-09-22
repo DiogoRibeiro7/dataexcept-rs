@@ -378,7 +378,10 @@ mod tests {
             "age"
         );
         assert_eq!(
-            envelope.failure.expect("failure metadata should exist").kind,
+            envelope
+                .failure
+                .expect("failure metadata should exist")
+                .kind,
             FailureKind::Unknown
         );
     }
