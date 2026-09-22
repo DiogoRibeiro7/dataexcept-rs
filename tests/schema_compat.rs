@@ -1,4 +1,4 @@
-//! Cross-language compatibility tests for the DataExcept envelope contract.
+//! Cross-language compatibility tests for the `DataExcept` envelope contract.
 
 use dataexcept::{DataError, FailureMetadata};
 use serde_json::{Value, json};
