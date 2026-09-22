@@ -12,7 +12,9 @@ pub mod redaction;
 pub use envelope::ErrorEnvelope;
 pub use error::DataError;
 pub use failure::{FailureKind, FailureMetadata, InvalidFailureMetadata};
-pub use redaction::{fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret};
+pub use redaction::{
+    fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
+};
 
 /// Convenient result alias for operations that use [`DataError`].
 pub type Result<T> = std::result::Result<T, DataError>;
