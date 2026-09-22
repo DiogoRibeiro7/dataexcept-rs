@@ -128,7 +128,7 @@ pub struct DataValidationError {
 }
 
 impl DataValidationError {
-    /// Creates a validation error using the standard DataExcept message.
+    /// Creates a validation error using the standard `DataExcept` message.
     #[must_use]
     pub fn new(field: impl Into<String>, value: Value) -> Self {
         let field = field.into();
@@ -189,7 +189,7 @@ pub struct MissingDataError {
 }
 
 impl MissingDataError {
-    /// Creates a missing-data error using the standard DataExcept message.
+    /// Creates a missing-data error using the standard `DataExcept` message.
     #[must_use]
     pub fn new(feature: impl Into<String>) -> Self {
         let feature = feature.into();
@@ -280,7 +280,7 @@ impl From<SchemaMismatchError> for DataError {
 pub struct MissingColumnError {
     /// Missing column name.
     pub column: String,
-    /// Optional DataFrame or table name.
+    /// Optional `DataFrame` or table name.
     pub dataframe: Option<String>,
 }
 
