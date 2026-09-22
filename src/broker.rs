@@ -169,7 +169,9 @@ impl BrokerTimeoutError {
         );
         let mut default = format!("{attempted} timed out");
         if let Some(timeout_seconds) = timeout_seconds {
-            default.push_str(&format!(" after {timeout_seconds}s"));
+            default.push_str(" after ");
+            default.push_str(&timeout_seconds.to_string());
+            default.push('s');
         }
         default.push_str(&broker_suffix(Some(&broker)));
         if let Some(cause) = &cause {
