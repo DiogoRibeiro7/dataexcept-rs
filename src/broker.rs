@@ -98,11 +98,7 @@ pub struct BrokerConnectionError {
 impl BrokerConnectionError {
     /// Creates a broker-connection error.
     #[must_use]
-    pub fn new(
-        broker: impl Into<String>,
-        message: Option<String>,
-        cause: Option<String>,
-    ) -> Self {
+    pub fn new(broker: impl Into<String>, message: Option<String>, cause: Option<String>) -> Self {
         let broker = broker.into();
         let broker = redact_if_url(&broker, true);
         let mut default = format!("Failed to connect to message broker '{broker}'");
@@ -167,11 +163,10 @@ impl BrokerTimeoutError {
     ) -> Self {
         let broker = broker.into();
         let broker = redact_if_url(&broker, true);
-        let attempted = operation
-            .as_ref()
-            .map_or_else(|| "Broker operation".to_owned(), |operation| {
-                format!("Broker operation '{operation}'")
-            });
+        let attempted = operation.as_ref().map_or_else(
+            || "Broker operation".to_owned(),
+            |operation| format!("Broker operation '{operation}'"),
+        );
         let mut default = format!("{attempted} timed out");
         if let Some(timeout_seconds) = timeout_seconds {
             default.push_str(&format!(" after {timeout_seconds}s"));
@@ -424,8 +419,8 @@ impl From<MessageAcknowledgementError> for DataError {
 #[cfg(test)]
 mod tests {
     use super::{
-        BrokerConnectionError, BrokerTimeoutError, MessageAcknowledgementError, MessageConsumeError,
-        MessagePosition, MessagePublishError,
+        BrokerConnectionError, BrokerTimeoutError, MessageAcknowledgementError,
+        MessageConsumeError, MessagePosition, MessagePublishError,
     };
     use crate::DataError;
 
