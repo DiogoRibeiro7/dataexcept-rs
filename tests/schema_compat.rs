@@ -1,5 +1,5 @@
 use dataexcept::{DataError, FailureMetadata};
-use serde_json::{json, Value};
+use serde_json::{Value, json};
 
 fn schema() -> Value {
     serde_json::from_str(include_str!("../schemas/envelope-1.0.0.json"))
