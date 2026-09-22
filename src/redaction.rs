@@ -46,10 +46,8 @@ const SENSITIVE_PARAM_TOKENS: &[&str] = &[
 fn url_regex() -> &'static Regex {
     static URL_REGEX: OnceLock<Regex> = OnceLock::new();
     URL_REGEX.get_or_init(|| {
-        Regex::new(
-            r#"[a-zA-Z][a-zA-Z0-9+.\-]*://[^\s'"<>,;)\]}]*[^\s'"<>,;)\]}.:!?]"#,
-        )
-        .expect("DataExcept URL regex must compile")
+        Regex::new(r#"[a-zA-Z][a-zA-Z0-9+.\-]*://[^\s'"<>,;)\]}]*[^\s'"<>,;)\]}.:!?]"#)
+            .expect("DataExcept URL regex must compile")
     })
 }
 
@@ -118,10 +116,7 @@ pub fn remove_secret(text: &str, secret: Option<&str>) -> String {
         return text.to_owned();
     }
 
-    text.replace(
-        secret,
-        &format!("{PLACEHOLDER}({})", fingerprint(secret)),
-    )
+    text.replace(secret, &format!("{PLACEHOLDER}({})", fingerprint(secret)))
 }
 
 fn redact_params(query: &str) -> (String, bool) {
@@ -129,8 +124,9 @@ fn redact_params(query: &str) -> (String, bool) {
         return (query.to_owned(), false);
     }
 
-    let pairs: Vec<(String, String)> =
-        form_urlencoded::parse(query.as_bytes()).into_owned().collect();
+    let pairs: Vec<(String, String)> = form_urlencoded::parse(query.as_bytes())
+        .into_owned()
+        .collect();
 
     if !pairs.iter().any(|(key, _)| is_sensitive(key)) {
         return (query.to_owned(), false);
@@ -187,7 +183,7 @@ pub fn redact_url(url: &str, keep_path: bool) -> String {
 
     let (authority, path) = without_query
         .split_once('/')
-        .map_or((without_query, ""), |(authority, path)| {
+        .map_or((without_query, ""), |(authority, _)| {
             (authority, &without_query[authority.len()..])
         });
 
@@ -309,7 +305,10 @@ mod tests {
     fn redact_secret_handles_empty_and_present_values() {
         assert_eq!(redact_secret(None), None);
         assert_eq!(redact_secret(Some("")), Some("***".to_owned()));
-        assert_eq!(redact_secret(Some("secret")), Some("***(2bb80d53)".to_owned()));
+        assert_eq!(
+            redact_secret(Some("secret")),
+            Some("***(2bb80d53)".to_owned())
+        );
     }
 
     #[test]
