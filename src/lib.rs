@@ -4,6 +4,7 @@
 //! crate starts with the language-neutral parts of that contract: failure
 //! metadata and JSON-safe error envelopes.
 
+pub mod broker;
 pub mod data;
 pub mod database;
 mod envelope;
@@ -14,6 +15,10 @@ pub mod redaction;
 pub mod schema;
 pub mod transformation;
 
+pub use broker::{
+    BrokerConnectionError, BrokerTimeoutError, MessageAcknowledgementError, MessageConsumeError,
+    MessagePosition, MessagePublishError,
+};
 pub use data::{
     DataFormatError, DataLoadingError, DataValidationError, MissingColumnError, MissingDataError,
     SchemaMismatchError,
