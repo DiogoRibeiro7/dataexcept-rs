@@ -5,9 +5,9 @@
 //! metadata and JSON-safe error envelopes.
 
 pub mod broker;
+mod conversions;
 pub mod data;
 pub mod database;
-mod conversions;
 mod envelope;
 mod error;
 mod failure;
