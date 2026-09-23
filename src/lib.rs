@@ -27,9 +27,9 @@ pub mod tracing_integration;
 pub mod transformation;
 
 pub use boundaries::{
-    BoundaryContextError, BrokerContext, BrokerOperation, HttpContext, OrchestratorContext,
-    WorkerContext, broker_context_from_message, http_context_from_request,
-    orchestrator_context_from_step, worker_context_from_task,
+    BoundaryContextError, BrokerContext, BrokerContextOptions, BrokerOperation, HttpContext,
+    OrchestratorContext, OrchestratorContextOptions, WorkerContext, broker_context_from_message,
+    http_context_from_request, orchestrator_context_from_step, worker_context_from_task,
 };
 pub use broker::{
     BrokerConnectionError, BrokerTimeoutError, MessageAcknowledgementError, MessageConsumeError,
