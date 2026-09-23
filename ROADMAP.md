@@ -29,7 +29,7 @@
 - [x] W3C Trace Context support
 - [x] Optional `tracing` integration
 - [x] Optional OpenTelemetry integration
-- [ ] Optional Sentry integration
+- [x] Optional Sentry integration
 - [ ] HTTP, worker, broker, and orchestrator boundary adapters
 
 ## Compatibility policy
