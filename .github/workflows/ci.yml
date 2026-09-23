@@ -103,3 +103,46 @@ jobs:
 
       - name: Build package
         run: cargo package
+
+  semver:
+    name: SemVer compatibility
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Determine release stage
+        id: release
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(sed -n 's/^version = "\(.*\)"/\1/p' Cargo.toml | head -n 1)"
+          if [[ "$version" == *"-alpha."* ]]; then
+            echo "enforce=false" >> "$GITHUB_OUTPUT"
+            echo "Alpha release detected; SemVer compatibility remains advisory until beta."
+          else
+            echo "enforce=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Determine baseline tag
+        if: steps.release.outputs.enforce == 'true'
+        id: baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="$(git tag --list 'v*' --sort=-version:refname | head -n 1)"
+          test -n "$tag" || {
+            echo "No previous release tag found for SemVer baseline" >&2
+            exit 1
+          }
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          echo "Using $tag as the SemVer baseline"
+
+      - name: Check SemVer compatibility
+        if: steps.release.outputs.enforce == 'true'
+        uses: obi1kenobi/cargo-semver-checks-action@v2
+        with:
+          baseline-rev: ${{ steps.baseline.outputs.tag }}
+          feature-group: all-features
