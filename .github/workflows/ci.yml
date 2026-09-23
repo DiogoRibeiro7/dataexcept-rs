@@ -40,3 +40,63 @@ jobs:
 
       - name: Documentation
         run: cargo doc --no-deps --all-features
+
+  msrv:
+    name: MSRV 1.85
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust 1.85
+        uses: dtolnay/rust-toolchain@1.85.0
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check all features on MSRV
+        run: cargo check --all-features
+
+  features:
+    name: Optional feature matrix
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: Check core only
+        run: cargo check --no-default-features
+
+      - name: Check tracing feature
+        run: cargo check --no-default-features --features tracing
+
+      - name: Check OpenTelemetry feature
+        run: cargo check --no-default-features --features opentelemetry
+
+      - name: Check Sentry feature
+        run: cargo check --no-default-features --features sentry
+
+  package:
+    name: Package validation
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Cargo
+        uses: Swatinem/rust-cache@v2
+
+      - name: List package contents
+        run: cargo package --list
+
+      - name: Build package
+        run: cargo package
