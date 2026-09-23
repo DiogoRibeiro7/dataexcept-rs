@@ -21,7 +21,7 @@
 - [x] Database and network errors
 - [x] Message-broker errors
 - [x] ML training, inference, and evaluation errors
-- [ ] Conversion helpers for common Rust ecosystem error types
+- [x] Conversion helpers for common Rust ecosystem error types
 
 ## 0.3 — Observability
 
