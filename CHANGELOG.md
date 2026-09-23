@@ -6,12 +6,23 @@ The project follows semantic versioning. Pre-release versions may contain API ch
 
 ## [Unreleased]
 
+## [0.1.0-alpha.2] - 2026-09-23
+
+Second public alpha focused on API hardening, release automation, and validation.
+
 ### Changed
 
 - boundary option structs now use fluent setters instead of public field literals, allowing future options without breaking callers;
 - parsed `W3CTraceContext` fields are private and exposed through read-only accessors so validated trace state cannot be mutated into an invalid form;
 - extensible boundary, trace-conflict, and operation-context error enums are now `#[non_exhaustive]`;
 - docs.rs builds all optional features and crate-level documentation reflects the full alpha API.
+
+### Added
+
+- runnable examples for core errors, trace-aware observability, and boundary contexts;
+- CI validation for the Rust 1.85 MSRV, individual optional features, examples, and packaged crate contents;
+- crates.io Trusted Publishing through GitHub OIDC;
+- a SemVer compatibility gate that becomes mandatory for beta and stable releases.
 
 ## [0.1.0-alpha.1] - 2026-09-23
 
