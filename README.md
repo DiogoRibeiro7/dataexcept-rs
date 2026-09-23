@@ -85,6 +85,24 @@ The resulting envelope contains stable machine-readable fields such as:
 }
 ```
 
+## Consuming envelope JSON
+
+For cross-language transport boundaries, parse the full protocol with
+`EnvelopeNode` rather than assuming every node is a normal exception record:
+
+```rust
+use dataexcept::EnvelopeNode;
+
+let payload = r#"{"truncated":true}"#;
+let node = EnvelopeNode::from_json(payload).expect("valid DataExcept envelope");
+
+assert!(node.is_truncated());
+```
+
+The protocol reader understands ordinary exception records, cycle records, and
+truncation markers. Marker shapes are strict, while ordinary 1.x records ignore
+unknown fields for forward compatibility.
+
 ## Runnable examples
 
 The repository includes examples that are compiled in CI:
