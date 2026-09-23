@@ -348,10 +348,7 @@ mod tests {
     fn empty_identifiers_are_rejected() {
         let result = OperationContext::builder().job_id("   ").build();
 
-        assert_eq!(
-            result,
-            Err(InvalidOperationContext::EmptyField("job_id"))
-        );
+        assert_eq!(result, Err(InvalidOperationContext::EmptyField("job_id")));
     }
 
     #[test]
