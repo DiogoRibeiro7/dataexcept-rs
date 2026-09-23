@@ -26,11 +26,7 @@ pub struct ModelTrainingError {
 impl ModelTrainingError {
     /// Creates a model-training error.
     #[must_use]
-    pub fn new(
-        model_type: impl Into<String>,
-        epoch: Option<u64>,
-        message: Option<String>,
-    ) -> Self {
+    pub fn new(model_type: impl Into<String>, epoch: Option<u64>, message: Option<String>) -> Self {
         let model_type = model_type.into();
         let default = epoch.map_or_else(
             || format!("Training failed for model '{model_type}'"),
@@ -87,11 +83,7 @@ pub struct ConvergenceError {
 impl ConvergenceError {
     /// Creates a convergence error.
     #[must_use]
-    pub fn new(
-        model_type: impl Into<String>,
-        iterations: u64,
-        message: Option<String>,
-    ) -> Self {
+    pub fn new(model_type: impl Into<String>, iterations: u64, message: Option<String>) -> Self {
         let model_type = model_type.into();
         let default =
             format!("Model '{model_type}' failed to converge after {iterations} iterations");
@@ -486,8 +478,7 @@ mod tests {
 
     #[test]
     fn cross_validation_error_preserves_folds_and_cause() {
-        let error =
-            CrossValidationError::new(5, Some("stratification impossible".to_owned()));
+        let error = CrossValidationError::new(5, Some("stratification impossible".to_owned()));
         let envelope = DataError::from(error).to_envelope();
         let attributes = envelope.attributes.expect("attributes should exist");
 
