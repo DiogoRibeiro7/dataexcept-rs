@@ -18,7 +18,7 @@ pub fn emit_error(error: &DataError, operation: Option<&OperationContext>) {
     let envelope = error.to_envelope();
     let envelope_json = envelope
         .to_json()
-        .unwrap_or_else(|_| "{"type":"serialization_error"}".to_owned());
+        .unwrap_or_else(|_| r#"{"type":"serialization_error"}"#.to_owned());
 
     let operation_json = operation
         .and_then(|context| serde_json::to_string(context).ok())
