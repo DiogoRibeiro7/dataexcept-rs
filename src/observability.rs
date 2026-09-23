@@ -95,14 +95,14 @@ impl OperationContext {
     #[must_use]
     pub fn to_map(&self) -> BTreeMap<&'static str, &str> {
         let mut fields = BTreeMap::new();
-        self.insert_present(&mut fields, "system", self.system());
-        self.insert_present(&mut fields, "component", self.component());
-        self.insert_present(&mut fields, "operation", self.operation());
-        self.insert_present(&mut fields, "request_id", self.request_id());
-        self.insert_present(&mut fields, "job_id", self.job_id());
-        self.insert_present(&mut fields, "correlation_id", self.correlation_id());
-        self.insert_present(&mut fields, "trace_id", self.trace_id());
-        self.insert_present(&mut fields, "span_id", self.span_id());
+        Self::insert_present(&mut fields, "system", self.system());
+        Self::insert_present(&mut fields, "component", self.component());
+        Self::insert_present(&mut fields, "operation", self.operation());
+        Self::insert_present(&mut fields, "request_id", self.request_id());
+        Self::insert_present(&mut fields, "job_id", self.job_id());
+        Self::insert_present(&mut fields, "correlation_id", self.correlation_id());
+        Self::insert_present(&mut fields, "trace_id", self.trace_id());
+        Self::insert_present(&mut fields, "span_id", self.span_id());
         fields
     }
 
@@ -123,7 +123,6 @@ impl OperationContext {
     }
 
     fn insert_present<'a>(
-        &'a self,
         fields: &mut BTreeMap<&'static str, &'a str>,
         name: &'static str,
         value: Option<&'a str>,
