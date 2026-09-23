@@ -215,17 +215,12 @@ mod tests {
     use super::{TraceContextConflict, parse_traceparent, trace_context_from_mapping};
     use crate::OperationContext;
 
-    const TRACEPARENT: &str =
-        "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
+    const TRACEPARENT: &str = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
 
     #[test]
     fn parses_valid_version_zero_traceparent() {
-        let trace = parse_traceparent(
-            TRACEPARENT,
-            Some("vendor=value"),
-            Some("tenant=acme"),
-        )
-        .expect("traceparent should be valid");
+        let trace = parse_traceparent(TRACEPARENT, Some("vendor=value"), Some("tenant=acme"))
+            .expect("traceparent should be valid");
 
         assert_eq!(trace.version, "00");
         assert_eq!(trace.trace_id, "4bf92f3577b34da6a3ce929d0e0e4736");
@@ -237,32 +232,34 @@ mod tests {
 
     #[test]
     fn rejects_zero_and_uppercase_identifiers() {
-        assert!(parse_traceparent(
-            "00-00000000000000000000000000000000-00f067aa0ba902b7-01",
-            None,
-            None
-        )
-        .is_none());
-        assert!(parse_traceparent(
-            "00-4BF92F3577B34DA6A3CE929D0E0E4736-00f067aa0ba902b7-01",
-            None,
-            None
-        )
-        .is_none());
+        assert!(
+            parse_traceparent(
+                "00-00000000000000000000000000000000-00f067aa0ba902b7-01",
+                None,
+                None
+            )
+            .is_none()
+        );
+        assert!(
+            parse_traceparent(
+                "00-4BF92F3577B34DA6A3CE929D0E0E4736-00f067aa0ba902b7-01",
+                None,
+                None
+            )
+            .is_none()
+        );
     }
 
     #[test]
     fn version_zero_rejects_extensions() {
-        let extended =
-            "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-extra";
+        let extended = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-extra";
 
         assert!(parse_traceparent(extended, None, None).is_none());
     }
 
     #[test]
     fn future_version_preserves_opaque_extension() {
-        let extended =
-            "01-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-future";
+        let extended = "01-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01-future";
 
         let trace = parse_traceparent(extended, None, None)
             .expect("future-version traceparent should preserve extension");
@@ -300,8 +297,8 @@ mod tests {
 
     #[test]
     fn operation_context_gets_trace_id_without_parent_span() {
-        let trace = parse_traceparent(TRACEPARENT, None, None)
-            .expect("traceparent should be valid");
+        let trace =
+            parse_traceparent(TRACEPARENT, None, None).expect("traceparent should be valid");
         let context = OperationContext::builder()
             .system("worker")
             .operation("billing.settle_invoice")
