@@ -16,6 +16,7 @@ pub mod network;
 pub mod observability;
 pub mod redaction;
 pub mod schema;
+pub mod trace_context;
 pub mod transformation;
 
 pub use broker::{
@@ -42,6 +43,9 @@ pub use redaction::{
     fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
 };
 pub use schema::{DtypeMismatchError, IndexAlignmentError, MergeKeyError, SchemaEvolutionError};
+pub use trace_context::{
+    TraceContextConflict, W3CTraceContext, parse_traceparent, trace_context_from_mapping,
+};
 pub use transformation::{
     DataNormalizationError, DataTransformationError, FeatureEngineeringError,
 };

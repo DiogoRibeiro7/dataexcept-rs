@@ -122,6 +122,11 @@ impl OperationContext {
         self.to_map().is_empty()
     }
 
+    pub(crate) fn with_trace_id_from_carrier(mut self, trace_id: String) -> Self {
+        self.trace_id = Some(trace_id);
+        self
+    }
+
     fn insert_present<'a>(
         fields: &mut BTreeMap<&'static str, &'a str>,
         name: &'static str,
