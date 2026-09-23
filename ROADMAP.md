@@ -30,7 +30,7 @@
 - [x] Optional `tracing` integration
 - [x] Optional OpenTelemetry integration
 - [x] Optional Sentry integration
-- [ ] HTTP, worker, broker, and orchestrator boundary adapters
+- [x] HTTP, worker, broker, and orchestrator boundary adapters
 
 ## Compatibility policy
 
