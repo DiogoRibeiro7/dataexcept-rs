@@ -63,10 +63,7 @@ pub fn exception_to_otel_attributes(
             "dataexcept.envelope.schema",
             ENVELOPE_SCHEMA_ID,
         ));
-        attributes.push(KeyValue::new(
-            "dataexcept.envelope",
-            envelope.to_json()?,
-        ));
+        attributes.push(KeyValue::new("dataexcept.envelope", envelope.to_json()?));
     }
 
     Ok(attributes)
@@ -82,8 +79,7 @@ pub fn record_otel_exception<S: Span>(
     operation_context: Option<&OperationContext>,
     include_envelope: bool,
 ) {
-    let Ok(attributes) =
-        exception_to_otel_attributes(error, operation_context, include_envelope)
+    let Ok(attributes) = exception_to_otel_attributes(error, operation_context, include_envelope)
     else {
         return;
     };
@@ -187,8 +183,8 @@ mod tests {
     fn optional_envelope_is_strict_json_and_carries_schema_id() {
         let error = DataError::new("example", "failed").with_attribute("field", json!("age"));
 
-        let attributes = exception_to_otel_attributes(&error, None, true)
-            .expect("attributes should be created");
+        let attributes =
+            exception_to_otel_attributes(&error, None, true).expect("attributes should be created");
 
         assert_eq!(
             string_attribute(&attributes, "dataexcept.envelope.schema"),
@@ -205,7 +201,9 @@ mod tests {
     }
 
     fn has_attribute(attributes: &[opentelemetry::KeyValue], key: &str) -> bool {
-        attributes.iter().any(|attribute| attribute.key.as_str() == key)
+        attributes
+            .iter()
+            .any(|attribute| attribute.key.as_str() == key)
     }
 
     fn string_attribute<'a>(
