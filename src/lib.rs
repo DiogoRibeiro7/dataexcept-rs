@@ -13,6 +13,7 @@ mod error;
 mod failure;
 pub mod ml;
 pub mod network;
+pub mod observability;
 pub mod redaction;
 pub mod schema;
 pub mod transformation;
@@ -34,6 +35,9 @@ pub use ml::{
     ModelInferenceError, ModelTrainingError, PredictionError, TrainingTimeoutError,
 };
 pub use network::{ConnectionTimeoutError, HostUnreachableError, ProtocolError};
+pub use observability::{
+    InvalidOperationContext, ObservabilityEvent, OperationContext, OperationContextBuilder,
+};
 pub use redaction::{
     fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
 };
