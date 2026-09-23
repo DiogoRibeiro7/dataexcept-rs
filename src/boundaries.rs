@@ -111,6 +111,23 @@ impl BrokerOperation {
     }
 }
 
+/// Optional metadata for a broker boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct BrokerContextOptions<'a> {
+    /// Optional logical component name.
+    pub component: Option<&'a str>,
+    /// Optional correlation identifier.
+    pub correlation_id: Option<&'a str>,
+    /// Optional partition number.
+    pub partition: Option<u32>,
+    /// Optional broker offset.
+    pub offset: Option<u64>,
+    /// Optional consumer-group identifier.
+    pub consumer_group: Option<&'a str>,
+    /// Optional message identifier.
+    pub message_id: Option<&'a str>,
+}
+
 /// Broker or stream-processing boundary context.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct BrokerContext {
@@ -165,6 +182,21 @@ impl BrokerContext {
     pub fn message_id(&self) -> Option<&str> {
         self.message_id.as_deref()
     }
+}
+
+/// Optional metadata for an orchestrator boundary.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+pub struct OrchestratorContextOptions<'a> {
+    /// Optional workflow-run identifier.
+    pub run_id: Option<&'a str>,
+    /// Optional step-run identifier.
+    pub step_run_id: Option<&'a str>,
+    /// Optional logical component name.
+    pub component: Option<&'a str>,
+    /// Optional correlation identifier.
+    pub correlation_id: Option<&'a str>,
+    /// Optional retry attempt number.
+    pub attempt: Option<u32>,
 }
 
 /// Workflow/orchestrator step context.
@@ -309,13 +341,16 @@ pub fn broker_context_from_message(
     operation: BrokerOperation,
     topic: &str,
     metadata: &BTreeMap<String, String>,
-    component: Option<&str>,
-    correlation_id: Option<&str>,
-    partition: Option<u32>,
-    offset: Option<u64>,
-    consumer_group: Option<&str>,
-    message_id: Option<&str>,
+    options: BrokerContextOptions<'_>,
 ) -> Result<BrokerContext, BoundaryContextError> {
+    let BrokerContextOptions {
+        component,
+        correlation_id,
+        partition,
+        offset,
+        consumer_group,
+        message_id,
+    } = options;
     let topic = single_line(topic, "topic")?;
     let correlation_id = optional_single_line(correlation_id, "correlation_id")?;
     let consumer_group = optional_single_line(consumer_group, "consumer_group")?;
@@ -360,12 +395,15 @@ pub fn orchestrator_context_from_step(
     workflow: &str,
     step: &str,
     metadata: &BTreeMap<String, String>,
-    run_id: Option<&str>,
-    step_run_id: Option<&str>,
-    component: Option<&str>,
-    correlation_id: Option<&str>,
-    attempt: Option<u32>,
+    options: OrchestratorContextOptions<'_>,
 ) -> Result<OrchestratorContext, BoundaryContextError> {
+    let OrchestratorContextOptions {
+        run_id,
+        step_run_id,
+        component,
+        correlation_id,
+        attempt,
+    } = options;
     let workflow = single_line(workflow, "workflow")?;
     let step = single_line(step, "step")?;
     let run_id = optional_single_line(run_id, "run_id")?;
@@ -498,8 +536,9 @@ mod tests {
     use std::collections::BTreeMap;
 
     use super::{
-        BrokerOperation, broker_context_from_message, http_context_from_request,
-        orchestrator_context_from_step, worker_context_from_task,
+        BrokerContextOptions, BrokerOperation, OrchestratorContextOptions,
+        broker_context_from_message, http_context_from_request, orchestrator_context_from_step,
+        worker_context_from_task,
     };
 
     const TRACEPARENT: &str = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
@@ -557,12 +596,14 @@ mod tests {
             BrokerOperation::Consume,
             "orders",
             &metadata,
-            Some("billing"),
-            Some("corr-9"),
-            Some(3),
-            Some(1042),
-            Some("billing"),
-            Some("msg-7"),
+            BrokerContextOptions {
+                component: Some("billing"),
+                correlation_id: Some("corr-9"),
+                partition: Some(3),
+                offset: Some(1042),
+                consumer_group: Some("billing"),
+                message_id: Some("msg-7"),
+            },
         )
         .expect("broker context should be valid");
 
@@ -583,11 +624,13 @@ mod tests {
             "daily_etl",
             "load_customers",
             &metadata,
-            Some("run-42"),
-            Some("step-run-7"),
-            None,
-            Some("corr-9"),
-            Some(1),
+            OrchestratorContextOptions {
+                run_id: Some("run-42"),
+                step_run_id: Some("step-run-7"),
+                component: None,
+                correlation_id: Some("corr-9"),
+                attempt: Some(1),
+            },
         )
         .expect("orchestrator context should be valid");
 
