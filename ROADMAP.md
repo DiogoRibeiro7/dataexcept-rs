@@ -37,7 +37,7 @@
 - [x] Enforce Rust 1.85 MSRV in CI
 - [x] Validate optional features independently
 - [x] Validate packaged crate contents and build
-- [ ] Add runnable examples for core and observability workflows
+- [x] Add runnable examples for core and observability workflows
 - [ ] Audit public API and documentation before the next prerelease
 - [ ] Add semantic-version compatibility checks before beta
 

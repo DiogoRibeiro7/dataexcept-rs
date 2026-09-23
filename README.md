@@ -85,6 +85,19 @@ The resulting envelope contains stable machine-readable fields such as:
 }
 ```
 
+## Runnable examples
+
+The repository includes examples that are compiled in CI:
+
+```bash
+cargo run --example core_error
+cargo run --example observability
+cargo run --example boundaries
+```
+
+They cover structured error envelopes, trace-aware observability events, and
+framework-neutral HTTP/broker boundary context.
+
 ## Design principles
 
 Rust errors and wire-format errors are separate concerns. Existing domain-specific Rust enums should remain domain-specific; they can be converted to `ErrorEnvelope` values at process, API, worker, or broker boundaries.
