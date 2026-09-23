@@ -7,6 +7,7 @@
 pub mod broker;
 pub mod data;
 pub mod database;
+mod conversions;
 mod envelope;
 mod error;
 mod failure;
