@@ -178,7 +178,7 @@ fn is_lower_hex(value: &str, length: usize) -> bool {
     value.len() == length
         && value
             .bytes()
-            .all(|byte| byte.is_ascii_digit() || (b'a'..=b'f').contains(&byte))
+            .all(|byte| byte.is_ascii_hexdigit() && !byte.is_ascii_uppercase())
 }
 
 fn mandatory_fields_are_valid(
@@ -206,7 +206,7 @@ fn version_shape_is_valid(value: &str, version: &str) -> bool {
 
 fn safe_optional_header(value: Option<&str>) -> Option<String> {
     value
-        .filter(|value| !value.contains(['\r', '\n']))
+        .filter(|value| !value.contains('\r') && !value.contains('\n'))
         .map(str::to_owned)
 }
 
