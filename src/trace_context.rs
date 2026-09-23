@@ -17,25 +17,58 @@ const ZERO_PARENT_ID: &str = "0000000000000000";
 /// Parsed W3C `traceparent` plus optional propagation companions.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct W3CTraceContext {
-    /// Original `traceparent` value, preserved verbatim for forwarding.
-    pub traceparent: String,
-    /// Two-character trace-context version.
-    pub version: String,
-    /// Thirty-two-character trace identifier.
-    pub trace_id: String,
-    /// Incoming caller span identifier.
-    ///
-    /// This is deliberately not treated as the local operation span ID.
-    pub parent_id: String,
-    /// Two-character trace flags field.
-    pub trace_flags: String,
-    /// Optional `tracestate` value when safe to forward.
-    pub tracestate: Option<String>,
-    /// Optional `baggage` value when safe to forward.
-    pub baggage: Option<String>,
+    traceparent: String,
+    version: String,
+    trace_id: String,
+    parent_id: String,
+    trace_flags: String,
+    tracestate: Option<String>,
+    baggage: Option<String>,
 }
 
 impl W3CTraceContext {
+    /// Returns the original `traceparent` value.
+    #[must_use]
+    pub fn traceparent(&self) -> &str {
+        &self.traceparent
+    }
+
+    /// Returns the W3C trace-context version.
+    #[must_use]
+    pub fn version(&self) -> &str {
+        &self.version
+    }
+
+    /// Returns the trace identifier.
+    #[must_use]
+    pub fn trace_id(&self) -> &str {
+        &self.trace_id
+    }
+
+    /// Returns the incoming caller span identifier.
+    #[must_use]
+    pub fn parent_id(&self) -> &str {
+        &self.parent_id
+    }
+
+    /// Returns the trace flags field.
+    #[must_use]
+    pub fn trace_flags(&self) -> &str {
+        &self.trace_flags
+    }
+
+    /// Returns `tracestate` when safe to forward.
+    #[must_use]
+    pub fn tracestate(&self) -> Option<&str> {
+        self.tracestate.as_deref()
+    }
+
+    /// Returns `baggage` when safe to forward.
+    #[must_use]
+    pub fn baggage(&self) -> Option<&str> {
+        self.baggage.as_deref()
+    }
+
     /// Returns whether the W3C sampled bit is set.
     #[must_use]
     pub fn sampled(&self) -> bool {
@@ -82,6 +115,7 @@ impl W3CTraceContext {
 
 /// Conflict between existing provenance and incoming trace context.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
+#[non_exhaustive]
 pub enum TraceContextConflict {
     /// The operation context and incoming carrier disagree about the trace ID.
     #[error("operation context trace_id {existing} conflicts with incoming trace_id {incoming}")]
@@ -222,10 +256,10 @@ mod tests {
         let trace = parse_traceparent(TRACEPARENT, Some("vendor=value"), Some("tenant=acme"))
             .expect("traceparent should be valid");
 
-        assert_eq!(trace.version, "00");
-        assert_eq!(trace.trace_id, "4bf92f3577b34da6a3ce929d0e0e4736");
-        assert_eq!(trace.parent_id, "00f067aa0ba902b7");
-        assert_eq!(trace.trace_flags, "01");
+        assert_eq!(trace.version(), "00");
+        assert_eq!(trace.trace_id(), "4bf92f3577b34da6a3ce929d0e0e4736");
+        assert_eq!(trace.parent_id(), "00f067aa0ba902b7");
+        assert_eq!(trace.trace_flags(), "01");
         assert!(trace.sampled());
         assert_eq!(trace.to_carrier()["tracestate"], "vendor=value");
     }
@@ -264,8 +298,8 @@ mod tests {
         let trace = parse_traceparent(extended, None, None)
             .expect("future-version traceparent should preserve extension");
 
-        assert_eq!(trace.traceparent, extended);
-        assert_eq!(trace.version, "01");
+        assert_eq!(trace.traceparent(), extended);
+        assert_eq!(trace.version(), "01");
     }
 
     #[test]
@@ -277,8 +311,8 @@ mod tests {
         )
         .expect("traceparent should remain valid");
 
-        assert_eq!(trace.tracestate, None);
-        assert_eq!(trace.baggage, None);
+        assert_eq!(trace.tracestate(), None);
+        assert_eq!(trace.baggage(), None);
     }
 
     #[test]
@@ -290,9 +324,9 @@ mod tests {
         ])
         .expect("carrier should contain valid trace context");
 
-        assert_eq!(trace.trace_id, "4bf92f3577b34da6a3ce929d0e0e4736");
-        assert_eq!(trace.tracestate.as_deref(), Some("vendor=value"));
-        assert_eq!(trace.baggage.as_deref(), Some("tenant=acme"));
+        assert_eq!(trace.trace_id(), "4bf92f3577b34da6a3ce929d0e0e4736");
+        assert_eq!(trace.tracestate(), Some("vendor=value"));
+        assert_eq!(trace.baggage(), Some("tenant=acme"));
     }
 
     #[test]

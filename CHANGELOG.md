@@ -4,6 +4,15 @@ All notable changes to `dataexcept` will be documented in this file.
 
 The project follows semantic versioning. Pre-release versions may contain API changes before the first stable release.
 
+## [Unreleased]
+
+### Changed
+
+- boundary option structs now use fluent setters instead of public field literals, allowing future options without breaking callers;
+- parsed `W3CTraceContext` fields are private and exposed through read-only accessors so validated trace state cannot be mutated into an invalid form;
+- extensible boundary, trace-conflict, and operation-context error enums are now `#[non_exhaustive]`;
+- docs.rs builds all optional features and crate-level documentation reflects the full alpha API.
+
 ## [0.1.0-alpha.1] - 2026-09-23
 
 Initial public alpha release.

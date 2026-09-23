@@ -38,7 +38,7 @@
 - [x] Validate optional features independently
 - [x] Validate packaged crate contents and build
 - [x] Add runnable examples for core and observability workflows
-- [ ] Audit public API and documentation before the next prerelease
+- [x] Audit public API and documentation before the next prerelease
 - [ ] Add semantic-version compatibility checks before beta
 
 ## Compatibility policy

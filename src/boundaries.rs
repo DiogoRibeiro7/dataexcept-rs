@@ -20,6 +20,7 @@ const WORKER_CORRELATION_KEYS: [&str; 3] = ["correlation_id", "x-correlation-id"
 
 /// Validation failure while constructing a boundary context.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
+#[non_exhaustive]
 pub enum BoundaryContextError {
     /// A required text field was empty after trimming.
     #[error("{0} must not be empty")]
@@ -92,6 +93,7 @@ impl WorkerContext {
 
 /// Stable broker boundary operation.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
 pub enum BrokerOperation {
     /// Publishing a message.
     Publish,
@@ -114,18 +116,56 @@ impl BrokerOperation {
 /// Optional metadata for a broker boundary.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct BrokerContextOptions<'a> {
-    /// Optional logical component name.
-    pub component: Option<&'a str>,
-    /// Optional correlation identifier.
-    pub correlation_id: Option<&'a str>,
-    /// Optional partition number.
-    pub partition: Option<u32>,
-    /// Optional broker offset.
-    pub offset: Option<u64>,
-    /// Optional consumer-group identifier.
-    pub consumer_group: Option<&'a str>,
-    /// Optional message identifier.
-    pub message_id: Option<&'a str>,
+    component: Option<&'a str>,
+    correlation_id: Option<&'a str>,
+    partition: Option<u32>,
+    offset: Option<u64>,
+    consumer_group: Option<&'a str>,
+    message_id: Option<&'a str>,
+}
+
+impl<'a> BrokerContextOptions<'a> {
+    /// Sets the logical component name.
+    #[must_use]
+    pub const fn component(mut self, value: &'a str) -> Self {
+        self.component = Some(value);
+        self
+    }
+
+    /// Sets the correlation identifier.
+    #[must_use]
+    pub const fn correlation_id(mut self, value: &'a str) -> Self {
+        self.correlation_id = Some(value);
+        self
+    }
+
+    /// Sets the partition number.
+    #[must_use]
+    pub const fn partition(mut self, value: u32) -> Self {
+        self.partition = Some(value);
+        self
+    }
+
+    /// Sets the broker offset.
+    #[must_use]
+    pub const fn offset(mut self, value: u64) -> Self {
+        self.offset = Some(value);
+        self
+    }
+
+    /// Sets the consumer-group identifier.
+    #[must_use]
+    pub const fn consumer_group(mut self, value: &'a str) -> Self {
+        self.consumer_group = Some(value);
+        self
+    }
+
+    /// Sets the message identifier.
+    #[must_use]
+    pub const fn message_id(mut self, value: &'a str) -> Self {
+        self.message_id = Some(value);
+        self
+    }
 }
 
 /// Broker or stream-processing boundary context.
@@ -187,16 +227,48 @@ impl BrokerContext {
 /// Optional metadata for an orchestrator boundary.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
 pub struct OrchestratorContextOptions<'a> {
-    /// Optional workflow-run identifier.
-    pub run_id: Option<&'a str>,
-    /// Optional step-run identifier.
-    pub step_run_id: Option<&'a str>,
-    /// Optional logical component name.
-    pub component: Option<&'a str>,
-    /// Optional correlation identifier.
-    pub correlation_id: Option<&'a str>,
-    /// Optional retry attempt number.
-    pub attempt: Option<u32>,
+    run_id: Option<&'a str>,
+    step_run_id: Option<&'a str>,
+    component: Option<&'a str>,
+    correlation_id: Option<&'a str>,
+    attempt: Option<u32>,
+}
+
+impl<'a> OrchestratorContextOptions<'a> {
+    /// Sets the workflow-run identifier.
+    #[must_use]
+    pub const fn run_id(mut self, value: &'a str) -> Self {
+        self.run_id = Some(value);
+        self
+    }
+
+    /// Sets the step-run identifier.
+    #[must_use]
+    pub const fn step_run_id(mut self, value: &'a str) -> Self {
+        self.step_run_id = Some(value);
+        self
+    }
+
+    /// Sets the logical component name.
+    #[must_use]
+    pub const fn component(mut self, value: &'a str) -> Self {
+        self.component = Some(value);
+        self
+    }
+
+    /// Sets the correlation identifier.
+    #[must_use]
+    pub const fn correlation_id(mut self, value: &'a str) -> Self {
+        self.correlation_id = Some(value);
+        self
+    }
+
+    /// Sets the retry attempt number.
+    #[must_use]
+    pub const fn attempt(mut self, value: u32) -> Self {
+        self.attempt = Some(value);
+        self
+    }
 }
 
 /// Workflow/orchestrator step context.
@@ -596,14 +668,13 @@ mod tests {
             BrokerOperation::Consume,
             "orders",
             &metadata,
-            BrokerContextOptions {
-                component: Some("billing"),
-                correlation_id: Some("corr-9"),
-                partition: Some(3),
-                offset: Some(1042),
-                consumer_group: Some("billing"),
-                message_id: Some("msg-7"),
-            },
+            BrokerContextOptions::default()
+                .component("billing")
+                .correlation_id("corr-9")
+                .partition(3)
+                .offset(1042)
+                .consumer_group("billing")
+                .message_id("msg-7"),
         )
         .expect("broker context should be valid");
 
@@ -624,13 +695,11 @@ mod tests {
             "daily_etl",
             "load_customers",
             &metadata,
-            OrchestratorContextOptions {
-                run_id: Some("run-42"),
-                step_run_id: Some("step-run-7"),
-                component: None,
-                correlation_id: Some("corr-9"),
-                attempt: Some(1),
-            },
+            OrchestratorContextOptions::default()
+                .run_id("run-42")
+                .step_run_id("step-run-7")
+                .correlation_id("corr-9")
+                .attempt(1),
         )
         .expect("orchestrator context should be valid");
 
