@@ -17,6 +17,8 @@ pub mod observability;
 pub mod redaction;
 pub mod schema;
 pub mod trace_context;
+#[cfg(feature = "tracing")]
+pub mod tracing_integration;
 pub mod transformation;
 
 pub use broker::{
@@ -46,6 +48,8 @@ pub use schema::{DtypeMismatchError, IndexAlignmentError, MergeKeyError, SchemaE
 pub use trace_context::{
     TraceContextConflict, W3CTraceContext, parse_traceparent, trace_context_from_mapping,
 };
+#[cfg(feature = "tracing")]
+pub use tracing_integration::emit_error;
 pub use transformation::{
     DataNormalizationError, DataTransformationError, FeatureEngineeringError,
 };
