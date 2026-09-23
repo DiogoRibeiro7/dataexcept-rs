@@ -1,37 +1,38 @@
 # Releasing
 
-## First crates.io alpha
+## crates.io Trusted Publishing
 
-The first public release is `0.1.0-alpha.1`.
+The crate uses crates.io Trusted Publishing through GitHub Actions.
 
-The repository provides a manual GitHub Actions workflow at
-`.github/workflows/release.yml`.
+Configure the trusted publisher on crates.io with:
 
-### One-time setup
+- **GitHub owner:** `DiogoRibeiro7`
+- **Repository:** `dataexcept-rs`
+- **Workflow:** `release.yml`
+- **Environment:** leave empty
 
-Create a crates.io API token with permission to publish the `dataexcept`
-crate, then add it to the GitHub repository as the Actions secret
-`CARGO_REGISTRY_TOKEN`.
+The workflow lives at `.github/workflows/release.yml` and requests
+`id-token: write`. Authentication is performed with
+`rust-lang/crates-io-auth-action@v1`, which provides a short-lived crates.io
+token to `cargo publish`.
 
-The first crates.io publication still requires this token-based bootstrap.
-After the crate exists on crates.io, Trusted Publishing can be configured for
-future releases.
+No long-lived `CARGO_REGISTRY_TOKEN` GitHub secret is required for normal
+releases after Trusted Publishing is configured.
 
-### Publish
+## Publish a release
 
-1. Ensure the release-preparation PR is merged into `main`.
+1. Prepare and merge the version/changelog PR into `main`.
 2. Open **Actions → Release → Run workflow**.
-3. Enter the crate version without the `v` prefix, for example
-   `0.1.0-alpha.1`.
+3. Enter the exact crate version from `Cargo.toml`, without the `v` prefix.
 4. Run the workflow.
 
 The workflow:
 
-- verifies the version in `Cargo.toml`;
-- requires the crates.io token secret;
+- verifies the requested version matches `Cargo.toml`;
 - runs formatting, Clippy, tests, and documentation;
 - lists the packaged files;
 - runs `cargo publish --dry-run`;
+- authenticates to crates.io through GitHub OIDC;
 - publishes with `cargo publish`;
 - creates the matching annotated Git tag;
 - creates a GitHub prerelease.
