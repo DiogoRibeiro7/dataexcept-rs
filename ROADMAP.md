@@ -41,6 +41,15 @@
 - [x] Audit public API and documentation before the next prerelease
 - [x] Add semantic-version compatibility checks before beta
 
+## 0.5 — Protocol consumption
+
+- [x] Expose envelope schema ID and version constants
+- [x] Parse the full envelope union: exception, cycle, and truncation nodes
+- [x] Validate canonical Python reference fixtures in Rust
+- [ ] Add typed accessors for common transport inspection patterns
+- [ ] Add compatibility tests against future 1.x schema additions
+- [ ] Prepare beta migration guide and protocol stability notes
+
 ## Compatibility policy
 
 The Rust API follows Rust semantic versioning. The serialized envelope is a separate language-neutral contract and must remain compatible with the published DataExcept schema. Contract changes require explicit schema-version handling and cross-language tests.
