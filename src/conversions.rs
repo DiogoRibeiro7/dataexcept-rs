@@ -117,8 +117,8 @@ mod tests {
 
     #[test]
     fn json_error_preserves_location_and_category() {
-        let source = serde_json::from_str::<Value>("{")
-            .expect_err("truncated JSON must fail to parse");
+        let source =
+            serde_json::from_str::<Value>("{").expect_err("truncated JSON must fail to parse");
         let envelope = DataError::from(source).to_envelope();
         let attributes = envelope.attributes.expect("attributes should exist");
 
