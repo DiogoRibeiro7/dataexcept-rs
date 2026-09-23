@@ -7,10 +7,10 @@ use serde_json::Value;
 
 use crate::{ErrorEnvelope, FailureMetadata};
 
-/// Version of the language-neutral DataExcept envelope schema.
+/// Version of the language-neutral `DataExcept` envelope schema.
 pub const ENVELOPE_SCHEMA_VERSION: &str = "1.0.0";
 
-/// Canonical identifier of the language-neutral DataExcept envelope schema.
+/// Canonical identifier of the language-neutral `DataExcept` envelope schema.
 pub const ENVELOPE_SCHEMA_ID: &str =
     "https://diogoribeiro7.github.io/DataExcept/schema/envelope-1.0.0.json";
 
@@ -139,7 +139,7 @@ impl<'de> Deserialize<'de> for TrueMarker {
     }
 }
 
-/// Any node permitted by the DataExcept envelope protocol.
+/// Any node permitted by the `DataExcept` envelope protocol.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(untagged)]
 #[non_exhaustive]
