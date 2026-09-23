@@ -14,6 +14,8 @@ mod failure;
 pub mod ml;
 pub mod network;
 pub mod observability;
+#[cfg(feature = "opentelemetry")]
+pub mod opentelemetry_integration;
 pub mod redaction;
 pub mod schema;
 pub mod trace_context;
@@ -41,6 +43,8 @@ pub use network::{ConnectionTimeoutError, HostUnreachableError, ProtocolError};
 pub use observability::{
     InvalidOperationContext, ObservabilityEvent, OperationContext, OperationContextBuilder,
 };
+#[cfg(feature = "opentelemetry")]
+pub use opentelemetry_integration::{exception_to_otel_attributes, record_otel_exception};
 pub use redaction::{
     fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
 };
