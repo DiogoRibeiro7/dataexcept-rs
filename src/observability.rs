@@ -244,6 +244,7 @@ fn sanitize(
 
 /// Validation failure for [`OperationContext`].
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Error)]
+#[non_exhaustive]
 pub enum InvalidOperationContext {
     /// An explicitly supplied identifier was empty.
     #[error("{0} must not be empty")]
