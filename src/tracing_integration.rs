@@ -6,7 +6,7 @@
 
 use crate::{DataError, OperationContext};
 
-/// Emits a structured DataExcept error event through `tracing`.
+/// Emits a structured `DataExcept` error event through `tracing`.
 ///
 /// The event includes the stable error code, rendered message, serialized
 /// envelope, and low-cardinality operation fields when available. Correlation
