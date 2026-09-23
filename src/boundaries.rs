@@ -16,11 +16,7 @@ use crate::{
 const REQUEST_ID_HEADERS: [&str; 2] = ["x-request-id", "request-id"];
 const CORRELATION_ID_HEADERS: [&str; 2] = ["x-correlation-id", "correlation-id"];
 const JOB_ID_KEYS: [&str; 3] = ["job_id", "task_id", "id"];
-const WORKER_CORRELATION_KEYS: [&str; 3] = [
-    "correlation_id",
-    "x-correlation-id",
-    "correlation-id",
-];
+const WORKER_CORRELATION_KEYS: [&str; 3] = ["correlation_id", "x-correlation-id", "correlation-id"];
 
 /// Validation failure while constructing a boundary context.
 #[derive(Debug, Clone, PartialEq, Eq, Error)]
@@ -229,7 +225,9 @@ pub fn http_context_from_request(
 
     let request_id = first_metadata_value(headers, &REQUEST_ID_HEADERS);
     let correlation_id = first_metadata_value(headers, &CORRELATION_ID_HEADERS);
-    let mut builder = OperationContext::builder().system("http").operation(operation);
+    let mut builder = OperationContext::builder()
+        .system("http")
+        .operation(operation);
 
     if let Some(component) = component {
         builder = builder.component(component);
@@ -274,7 +272,9 @@ pub fn worker_context_from_task(
     let correlation_id = optional_single_line(correlation_id, "correlation_id")?
         .or_else(|| first_metadata_value(metadata, &WORKER_CORRELATION_KEYS));
 
-    let mut builder = OperationContext::builder().system("worker").operation(task_name);
+    let mut builder = OperationContext::builder()
+        .system("worker")
+        .operation(task_name);
     if let Some(component) = component {
         builder = builder.component(component);
     }
@@ -454,10 +454,7 @@ fn optional_single_line(
     value.map(|value| single_line(value, field)).transpose()
 }
 
-fn first_metadata_value(
-    metadata: &BTreeMap<String, String>,
-    names: &[&str],
-) -> Option<String> {
+fn first_metadata_value(metadata: &BTreeMap<String, String>, names: &[&str]) -> Option<String> {
     names.iter().find_map(|name| {
         metadata.iter().find_map(|(key, value)| {
             if key.eq_ignore_ascii_case(name) {
@@ -505,8 +502,7 @@ mod tests {
         orchestrator_context_from_step, worker_context_from_task,
     };
 
-    const TRACEPARENT: &str =
-        "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
+    const TRACEPARENT: &str = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
 
     #[test]
     fn http_uses_route_template_and_propagates_trace() {
@@ -515,13 +511,9 @@ mod tests {
             ("traceparent".to_owned(), TRACEPARENT.to_owned()),
         ]);
 
-        let context = http_context_from_request(
-            "post",
-            Some("/users/{id}"),
-            &headers,
-            Some("accounts"),
-        )
-        .expect("HTTP context should be valid");
+        let context =
+            http_context_from_request("post", Some("/users/{id}"), &headers, Some("accounts"))
+                .expect("HTTP context should be valid");
 
         assert_eq!(context.operation_context().system(), Some("http"));
         assert_eq!(
@@ -554,10 +546,7 @@ mod tests {
         .expect("worker context should be valid");
 
         assert_eq!(context.operation_context().job_id(), Some("job-42"));
-        assert_eq!(
-            context.operation_context().correlation_id(),
-            Some("corr-9")
-        );
+        assert_eq!(context.operation_context().correlation_id(), Some("corr-9"));
         assert_eq!(context.attempt(), Some(2));
     }
 
@@ -577,7 +566,10 @@ mod tests {
         )
         .expect("broker context should be valid");
 
-        assert_eq!(context.operation_context().operation(), Some("consume orders"));
+        assert_eq!(
+            context.operation_context().operation(),
+            Some("consume orders")
+        );
         assert_eq!(context.partition(), Some(3));
         assert_eq!(context.offset(), Some(1042));
         assert_eq!(context.consumer_group(), Some("billing"));
@@ -610,12 +602,7 @@ mod tests {
 
     #[test]
     fn http_rejects_raw_query_routes() {
-        let result = http_context_from_request(
-            "GET",
-            Some("/users?id=42"),
-            &BTreeMap::new(),
-            None,
-        );
+        let result = http_context_from_request("GET", Some("/users?id=42"), &BTreeMap::new(), None);
 
         assert!(result.is_err());
     }
