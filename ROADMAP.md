@@ -28,7 +28,7 @@
 - [x] Product-neutral operation context
 - [x] W3C Trace Context support
 - [x] Optional `tracing` integration
-- [ ] Optional OpenTelemetry integration
+- [x] Optional OpenTelemetry integration
 - [ ] Optional Sentry integration
 - [ ] HTTP, worker, broker, and orchestrator boundary adapters
 
