@@ -115,10 +115,7 @@ fn parses_cycle_marker_at_end_of_chain() {
 
 #[test]
 fn reserializes_reference_fixture_without_losing_protocol_shape() {
-    let node = parse_fixture(
-        "cycle",
-        include_str!("fixtures/python/cycle.json"),
-    );
+    let node = parse_fixture("cycle", include_str!("fixtures/python/cycle.json"));
     let value = serde_json::to_value(node).expect("node should serialize");
 
     assert_eq!(value["cause"]["cause"]["cycle"], true);
