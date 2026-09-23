@@ -12,6 +12,11 @@ use crate::{DataError, FailureKind, OperationContext};
 /// The original event is left unchanged. Full error and operation context are
 /// stored under `contexts`; only low-cardinality operation fields and failure
 /// classification are promoted into `tags`.
+///
+/// # Panics
+///
+/// Panics when `event` is not a JSON object. Serialization of crate-owned
+/// `DataError` and `OperationContext` values is expected to be infallible.
 #[must_use]
 pub fn enrich_sentry_event(
     event: &Value,
