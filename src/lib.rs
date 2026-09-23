@@ -10,6 +10,7 @@ pub mod database;
 mod envelope;
 mod error;
 mod failure;
+pub mod ml;
 pub mod network;
 pub mod redaction;
 pub mod schema;
@@ -27,6 +28,10 @@ pub use database::{DatabaseConnectionError, QueryExecutionError, TransactionErro
 pub use envelope::ErrorEnvelope;
 pub use error::DataError;
 pub use failure::{FailureKind, FailureMetadata, InvalidFailureMetadata};
+pub use ml::{
+    ConvergenceError, CrossValidationError, HyperparameterError, ModelEvaluationError,
+    ModelInferenceError, ModelTrainingError, PredictionError, TrainingTimeoutError,
+};
 pub use network::{ConnectionTimeoutError, HostUnreachableError, ProtocolError};
 pub use redaction::{
     fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
