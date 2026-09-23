@@ -110,9 +110,9 @@ impl OperationContext {
     #[must_use]
     pub fn index_fields(&self) -> BTreeMap<&'static str, &str> {
         let mut fields = BTreeMap::new();
-        self.insert_present(&mut fields, "system", self.system());
-        self.insert_present(&mut fields, "component", self.component());
-        self.insert_present(&mut fields, "operation", self.operation());
+        Self::insert_present(&mut fields, "system", self.system());
+        Self::insert_present(&mut fields, "component", self.component());
+        Self::insert_present(&mut fields, "operation", self.operation());
         fields
     }
 
