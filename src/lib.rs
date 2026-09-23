@@ -1,8 +1,12 @@
 //! Structured errors and failure observability for Rust.
 //!
-//! `dataexcept` is the Rust companion to the Python `DataExcept` project. The
-//! crate starts with the language-neutral parts of that contract: failure
-//! metadata and JSON-safe error envelopes.
+//! `dataexcept` is the Rust companion to the Python `DataExcept` project.
+//! It provides structured operational errors, a language-neutral error envelope,
+//! failure classification, redaction, W3C trace propagation, observability
+//! adapters, and typed data/ML infrastructure errors.
+//!
+//! The Rust API is intentionally idiomatic rather than a mechanical port. The
+//! serialized envelope is the cross-language compatibility boundary.
 
 pub mod boundaries;
 pub mod broker;
