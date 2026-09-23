@@ -6,6 +6,13 @@ The project follows semantic versioning. Pre-release versions may contain API ch
 
 ## [Unreleased]
 
+### Added
+
+- full envelope protocol reader for ordinary exception, cycle, and truncation nodes;
+- public envelope schema ID and version constants;
+- canonical Python reference fixtures exercised directly by Rust compatibility tests.
+
+
 ## [0.1.0-alpha.2] - 2026-09-23
 
 Second public alpha focused on API hardening, release automation, and validation.
