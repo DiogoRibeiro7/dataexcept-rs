@@ -5,21 +5,41 @@
 
 Rust implementation of the **DataExcept** structured error and failure-observability model.
 
-The project is a companion to the Python [DataExcept](https://github.com/DiogoRibeiro7/DataExcept) package. It is not intended as a line-by-line port. The Rust API should remain idiomatic while preserving the language-neutral failure metadata and serialized error-envelope contract used across service and process boundaries.
+The project is a companion to the Python [DataExcept](https://github.com/DiogoRibeiro7/DataExcept) package. It is not a line-by-line port. The Rust API remains idiomatic while preserving the language-neutral failure metadata and serialized error-envelope contract used across service and process boundaries.
+
+> **Status:** experimental alpha. APIs may change before the first stable release.
+
+## Installation
+
+For the alpha release:
+
+```toml
+[dependencies]
+dataexcept = "0.1.0-alpha.1"
+```
+
+Optional observability integrations are feature-gated:
+
+```toml
+[dependencies]
+dataexcept = { version = "0.1.0-alpha.1", features = ["tracing", "opentelemetry", "sentry"] }
+```
 
 ## Current scope
 
-The first release establishes the core cross-language model:
+The alpha includes:
 
 - transient, permanent, and unknown failure classification;
 - retryability and optional retry-after metadata;
-- JSON-safe structured error envelopes;
-- structured attributes;
-- explicit cause and context chains;
-- grouped errors;
-- a small `DataError` type for applications that do not already have their own error enums.
-
-Domain-specific errors, tracing, OpenTelemetry, Sentry, broker adapters, and cross-language schema fixtures are planned in the [roadmap](ROADMAP.md).
+- JSON-safe structured error envelopes with cause, context, and grouped errors;
+- canonical JSON Schema validation and cross-language fixtures;
+- credential-bearing URL redaction;
+- idiomatic `DataError` plus conversions from common Rust errors;
+- ingestion, validation, schema, transformation, database, network, broker, and ML error types;
+- product-neutral operation context;
+- W3C Trace Context parsing and propagation;
+- optional `tracing`, OpenTelemetry, and Sentry integrations;
+- framework-neutral HTTP, worker, broker, and orchestrator boundary adapters.
 
 ## Example
 
@@ -69,7 +89,9 @@ The resulting envelope contains stable machine-readable fields such as:
 
 Rust errors and wire-format errors are separate concerns. Existing domain-specific Rust enums should remain domain-specific; they can be converted to `ErrorEnvelope` values at process, API, worker, or broker boundaries.
 
-The serialized envelope is treated as a language-neutral contract. Compatibility with the canonical DataExcept JSON Schema will be protected with cross-language fixtures and contract tests rather than by forcing Python implementation details into Rust.
+The serialized envelope is a separate language-neutral contract. Compatibility with the canonical DataExcept JSON Schema is protected by cross-language fixtures and contract tests rather than by forcing Python implementation details into Rust.
+
+Observability integrations do not own application runtime configuration. Subscriber setup, OpenTelemetry providers/exporters, and Sentry SDK initialization remain application concerns.
 
 ## Development
 
@@ -80,7 +102,7 @@ cargo test --all-features
 cargo doc --no-deps --all-features
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) and [ROADMAP.md](ROADMAP.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
