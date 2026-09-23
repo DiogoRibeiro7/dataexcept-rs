@@ -18,6 +18,8 @@ pub mod observability;
 pub mod opentelemetry_integration;
 pub mod redaction;
 pub mod schema;
+#[cfg(feature = "sentry")]
+pub mod sentry_integration;
 pub mod trace_context;
 #[cfg(feature = "tracing")]
 pub mod tracing_integration;
@@ -49,6 +51,8 @@ pub use redaction::{
     fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
 };
 pub use schema::{DtypeMismatchError, IndexAlignmentError, MergeKeyError, SchemaEvolutionError};
+#[cfg(feature = "sentry")]
+pub use sentry_integration::enrich_sentry_event;
 pub use trace_context::{
     TraceContextConflict, W3CTraceContext, parse_traceparent, trace_context_from_mapping,
 };
