@@ -50,7 +50,9 @@ impl From<ErrorEnvelope> for ExceptionRecord {
             attributes: value.attributes,
             failure: value.failure,
             cause: value.cause.map(|cause| Box::new(Self::from(*cause).into())),
-            context: value.context.map(|context| Box::new(Self::from(*context).into())),
+            context: value
+                .context
+                .map(|context| Box::new(Self::from(*context).into())),
             exceptions: value.exceptions.map(|items| {
                 items
                     .into_iter()
@@ -252,20 +254,16 @@ impl<'de> Deserialize<'de> for EnvelopeNode {
 #[cfg(test)]
 mod tests {
     use super::{
-        CycleRecord, ENVELOPE_SCHEMA_ID, ENVELOPE_SCHEMA_VERSION, EnvelopeNode,
-        TruncationMarker,
+        CycleRecord, ENVELOPE_SCHEMA_ID, ENVELOPE_SCHEMA_VERSION, EnvelopeNode, TruncationMarker,
     };
 
     #[test]
     fn parses_all_protocol_node_shapes() {
-        let exception = EnvelopeNode::from_json(
-            r#"{"type":"E","module":"m","message":"x"}"#,
-        )
-        .expect("exception record should parse");
-        let cycle = EnvelopeNode::from_json(
-            r#"{"type":"E","module":"m","message":"x","cycle":true}"#,
-        )
-        .expect("cycle record should parse");
+        let exception = EnvelopeNode::from_json(r#"{"type":"E","module":"m","message":"x"}"#)
+            .expect("exception record should parse");
+        let cycle =
+            EnvelopeNode::from_json(r#"{"type":"E","module":"m","message":"x","cycle":true}"#)
+                .expect("cycle record should parse");
         let truncated = EnvelopeNode::from_json(r#"{"truncated":true}"#)
             .expect("truncation marker should parse");
 
@@ -288,10 +286,9 @@ mod tests {
 
     #[test]
     fn ordinary_records_accept_future_fields() {
-        let node = EnvelopeNode::from_json(
-            r#"{"type":"E","module":"m","message":"x","future":42}"#,
-        )
-        .expect("unknown 1.x fields should be ignored");
+        let node =
+            EnvelopeNode::from_json(r#"{"type":"E","module":"m","message":"x","future":42}"#)
+                .expect("unknown 1.x fields should be ignored");
 
         assert!(node.as_exception().is_some());
     }
