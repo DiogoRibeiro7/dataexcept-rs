@@ -41,6 +41,9 @@ jobs:
       - name: Documentation
         run: cargo doc --no-deps --all-features
 
+      - name: Check examples
+        run: cargo check --examples --all-features
+
   msrv:
     name: MSRV 1.85
     runs-on: ubuntu-latest
