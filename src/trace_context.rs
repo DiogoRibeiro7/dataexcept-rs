@@ -325,8 +325,8 @@ mod tests {
         .expect("carrier should contain valid trace context");
 
         assert_eq!(trace.trace_id(), "4bf92f3577b34da6a3ce929d0e0e4736");
-        assert_eq!(trace.tracestate()(), Some("vendor=value"));
-        assert_eq!(trace.baggage()(), Some("tenant=acme"));
+        assert_eq!(trace.tracestate(), Some("vendor=value"));
+        assert_eq!(trace.baggage(), Some("tenant=acme"));
     }
 
     #[test]
