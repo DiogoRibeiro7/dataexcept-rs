@@ -26,7 +26,7 @@
 ## 0.3 — Observability
 
 - [x] Product-neutral operation context
-- [ ] W3C Trace Context support
+- [x] W3C Trace Context support
 - [ ] Optional `tracing` integration
 - [ ] Optional OpenTelemetry integration
 - [ ] Optional Sentry integration
