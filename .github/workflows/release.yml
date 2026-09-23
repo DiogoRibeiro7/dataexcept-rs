@@ -6,10 +6,10 @@ on:
       version:
         description: Crate version to publish, without the v prefix
         required: true
-        default: 0.1.0-alpha.1
 
 permissions:
   contents: write
+  id-token: write
 
 env:
   CARGO_TERM_COLOR: always
@@ -45,17 +45,6 @@ jobs:
             exit 1
           }
 
-      - name: Check crates.io token
-        env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
-        shell: bash
-        run: |
-          set -euo pipefail
-          test -n "$CARGO_REGISTRY_TOKEN" || {
-            echo "CARGO_REGISTRY_TOKEN is not configured" >&2
-            exit 1
-          }
-
       - name: Check formatting
         run: cargo fmt --all -- --check
 
@@ -74,9 +63,13 @@ jobs:
       - name: Dry-run publish
         run: cargo publish --dry-run
 
+      - name: Authenticate with crates.io
+        id: auth
+        uses: rust-lang/crates-io-auth-action@v1
+
       - name: Publish to crates.io
         env:
-          CARGO_REGISTRY_TOKEN: ${{ secrets.CARGO_REGISTRY_TOKEN }}
+          CARGO_REGISTRY_TOKEN: ${{ steps.auth.outputs.token }}
         run: cargo publish
 
       - name: Create release tag
