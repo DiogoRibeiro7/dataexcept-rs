@@ -1,4 +1,4 @@
-//! Correlates a DataExcept error with incoming W3C trace context.
+//! Correlates a `DataExcept` error with incoming W3C trace context.
 
 use dataexcept::{DataError, ObservabilityEvent, OperationContext, parse_traceparent};
 
