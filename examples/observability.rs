@@ -2,8 +2,7 @@
 
 use dataexcept::{DataError, ObservabilityEvent, OperationContext, parse_traceparent};
 
-const TRACEPARENT: &str =
-    "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
+const TRACEPARENT: &str = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
 
 fn main() {
     let trace =
@@ -27,6 +26,8 @@ fn main() {
 
     println!(
         "{}",
-        event.to_json().expect("observability event should serialize")
+        event
+            .to_json()
+            .expect("observability event should serialize")
     );
 }
