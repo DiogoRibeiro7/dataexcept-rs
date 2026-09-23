@@ -3,29 +3,46 @@
 use dataexcept::EnvelopeNode;
 
 fn parse_fixture(name: &str, content: &str) -> EnvelopeNode {
-    EnvelopeNode::from_json(content)
-        .unwrap_or_else(|error| panic!("{name} should parse: {error}"))
+    EnvelopeNode::from_json(content).unwrap_or_else(|error| panic!("{name} should parse: {error}"))
 }
 
 #[test]
 fn parses_all_python_reference_fixtures() {
     let fixtures = [
-        ("ordinary-exception", include_str!("fixtures/python/ordinary-exception.json")),
-        ("explicit-cause", include_str!("fixtures/python/explicit-cause.json")),
-        ("failure-metadata", include_str!("fixtures/python/failure-metadata.json")),
-        ("implicit-context", include_str!("fixtures/python/implicit-context.json")),
+        (
+            "ordinary-exception",
+            include_str!("fixtures/python/ordinary-exception.json"),
+        ),
+        (
+            "explicit-cause",
+            include_str!("fixtures/python/explicit-cause.json"),
+        ),
+        (
+            "failure-metadata",
+            include_str!("fixtures/python/failure-metadata.json"),
+        ),
+        (
+            "implicit-context",
+            include_str!("fixtures/python/implicit-context.json"),
+        ),
         (
             "nested-exception-group",
             include_str!("fixtures/python/nested-exception-group.json"),
         ),
         ("redaction", include_str!("fixtures/python/redaction.json")),
-        ("truncation", include_str!("fixtures/python/truncation.json")),
+        (
+            "truncation",
+            include_str!("fixtures/python/truncation.json"),
+        ),
         ("cycle", include_str!("fixtures/python/cycle.json")),
     ];
 
     for (name, content) in fixtures {
         let node = parse_fixture(name, content);
-        assert!(node.as_exception().is_some(), "{name} root should be an exception");
+        assert!(
+            node.as_exception().is_some(),
+            "{name} root should be an exception"
+        );
     }
 }
 
@@ -43,7 +60,11 @@ fn parses_nested_exception_groups_recursively() {
         .as_exception()
         .expect("first member should be nested group");
     assert_eq!(
-        nested.exceptions.as_ref().expect("nested group should have members").len(),
+        nested
+            .exceptions
+            .as_ref()
+            .expect("nested group should have members")
+            .len(),
         2
     );
 }
@@ -65,17 +86,17 @@ fn parses_truncation_marker_at_end_of_chain() {
         .as_deref()
         .and_then(EnvelopeNode::as_exception)
         .expect("level zero should be exception");
-    let marker = level_zero.cause.as_deref().expect("chain should end in marker");
+    let marker = level_zero
+        .cause
+        .as_deref()
+        .expect("chain should end in marker");
 
     assert!(marker.is_truncated());
 }
 
 #[test]
 fn parses_cycle_marker_at_end_of_chain() {
-    let node = parse_fixture(
-        "cycle",
-        include_str!("fixtures/python/cycle.json"),
-    );
+    let node = parse_fixture("cycle", include_str!("fixtures/python/cycle.json"));
     let outer = node.as_exception().expect("root should be exception");
     let inner = outer
         .cause
