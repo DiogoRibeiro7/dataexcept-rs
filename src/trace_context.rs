@@ -319,8 +319,8 @@ mod tests {
 
     #[test]
     fn conflicting_trace_id_is_rejected() {
-        let trace = parse_traceparent(TRACEPARENT, None, None)
-            .expect("traceparent should be valid");
+        let trace =
+            parse_traceparent(TRACEPARENT, None, None).expect("traceparent should be valid");
         let context = OperationContext::builder()
             .trace_id("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa")
             .build()
