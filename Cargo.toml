@@ -16,6 +16,7 @@ categories = ["rust-patterns", "development-tools::debugging"]
 [features]
 default = []
 opentelemetry = ["dep:opentelemetry"]
+sentry = []
 tracing = ["dep:tracing"]
 
 [dependencies]
