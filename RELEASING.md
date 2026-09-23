@@ -42,3 +42,13 @@ succeeds.
 
 Do not publish from an unmerged feature branch or with a version that differs
 from `Cargo.toml`.
+
+## SemVer compatibility
+
+CI includes a `cargo-semver-checks` gate. Alpha versions are allowed to evolve
+with intentional breaking changes. Beginning with beta releases, CI compares the
+current public API against the latest `v*` Git tag and checks all crate
+features for semantic-version compatibility.
+
+Before preparing `0.1.0-beta.1`, make sure the latest alpha release has a
+matching Git tag because that tag becomes the beta baseline.
