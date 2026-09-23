@@ -6,8 +6,7 @@ use dataexcept::{
     BrokerContextOptions, BrokerOperation, broker_context_from_message, http_context_from_request,
 };
 
-const TRACEPARENT: &str =
-    "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
+const TRACEPARENT: &str = "00-4bf92f3577b34da6a3ce929d0e0e4736-00f067aa0ba902b7-01";
 
 fn main() {
     let headers = BTreeMap::from([
@@ -16,13 +15,8 @@ fn main() {
         ("traceparent".to_owned(), TRACEPARENT.to_owned()),
     ]);
 
-    let http = http_context_from_request(
-        "POST",
-        Some("/users/{id}"),
-        &headers,
-        Some("accounts"),
-    )
-    .expect("valid HTTP context");
+    let http = http_context_from_request("POST", Some("/users/{id}"), &headers, Some("accounts"))
+        .expect("valid HTTP context");
 
     let broker = broker_context_from_message(
         BrokerOperation::Consume,
