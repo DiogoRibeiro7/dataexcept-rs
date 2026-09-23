@@ -15,14 +15,14 @@ For the alpha release:
 
 ```toml
 [dependencies]
-dataexcept = "0.1.0-alpha.1"
+dataexcept = "0.1.0-alpha.2"
 ```
 
 Optional observability integrations are feature-gated:
 
 ```toml
 [dependencies]
-dataexcept = { version = "0.1.0-alpha.1", features = ["tracing", "opentelemetry", "sentry"] }
+dataexcept = { version = "0.1.0-alpha.2", features = ["tracing", "opentelemetry", "sentry"] }
 ```
 
 ## Current scope
