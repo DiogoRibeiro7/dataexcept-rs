@@ -22,14 +22,13 @@ fn main() {
         BrokerOperation::Consume,
         "orders",
         &headers,
-        BrokerContextOptions {
-            component: Some("billing"),
-            correlation_id: Some("corr-9"),
-            partition: Some(3),
-            offset: Some(1042),
-            consumer_group: Some("billing"),
-            message_id: Some("msg-7"),
-        },
+        BrokerContextOptions::default()
+            .component("billing")
+            .correlation_id("corr-9")
+            .partition(3)
+            .offset(1042)
+            .consumer_group("billing")
+            .message_id("msg-7"),
     )
     .expect("valid broker context");
 
