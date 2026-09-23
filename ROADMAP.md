@@ -32,6 +32,15 @@
 - [x] Optional Sentry integration
 - [x] HTTP, worker, broker, and orchestrator boundary adapters
 
+## 0.4 — Alpha hardening
+
+- [x] Enforce Rust 1.85 MSRV in CI
+- [x] Validate optional features independently
+- [x] Validate packaged crate contents and build
+- [ ] Add runnable examples for core and observability workflows
+- [ ] Audit public API and documentation before the next prerelease
+- [ ] Add semantic-version compatibility checks before beta
+
 ## Compatibility policy
 
 The Rust API follows Rust semantic versioning. The serialized envelope is a separate language-neutral contract and must remain compatible with the published DataExcept schema. Contract changes require explicit schema-version handling and cross-language tests.
