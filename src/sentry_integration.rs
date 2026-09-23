@@ -24,8 +24,8 @@ pub fn enrich_sentry_event(
         .expect("Sentry event must be a JSON object");
 
     let envelope = error.to_envelope();
-    let envelope_value = serde_json::to_value(&envelope)
-        .expect("canonical DataError envelope must serialize");
+    let envelope_value =
+        serde_json::to_value(&envelope).expect("canonical DataError envelope must serialize");
 
     let contexts = object
         .entry("contexts")
@@ -39,8 +39,7 @@ pub fn enrich_sentry_event(
     contexts.insert("dataexcept".to_owned(), envelope_value);
 
     if let Some(context) = operation_context {
-        let operation = serde_json::to_value(context)
-            .expect("OperationContext must serialize");
+        let operation = serde_json::to_value(context).expect("OperationContext must serialize");
         if operation.as_object().is_some_and(|map| !map.is_empty()) {
             contexts.insert("dataexcept_operation".to_owned(), operation);
         }
@@ -75,10 +74,7 @@ pub fn enrich_sentry_event(
         let retryable = failure
             .retryable
             .map_or_else(|| "unknown".to_owned(), |value| value.to_string());
-        tags.insert(
-            "dataexcept.retryable".to_owned(),
-            Value::String(retryable),
-        );
+        tags.insert("dataexcept.retryable".to_owned(), Value::String(retryable));
     }
 
     if let Some(context) = operation_context {
@@ -142,16 +138,21 @@ mod tests {
             enriched["contexts"]["dataexcept_operation"]["request_id"],
             "req-42"
         );
-        assert_eq!(
-            enriched["tags"]["dataexcept.operation.system"],
-            "worker"
-        );
+        assert_eq!(enriched["tags"]["dataexcept.operation.system"], "worker");
         assert_eq!(
             enriched["tags"]["dataexcept.operation.operation"],
             "billing.settle_invoice"
         );
-        assert!(enriched["tags"].get("dataexcept.operation.request_id").is_none());
-        assert!(enriched["tags"].get("dataexcept.operation.trace_id").is_none());
+        assert!(
+            enriched["tags"]
+                .get("dataexcept.operation.request_id")
+                .is_none()
+        );
+        assert!(
+            enriched["tags"]
+                .get("dataexcept.operation.trace_id")
+                .is_none()
+        );
     }
 
     #[test]
