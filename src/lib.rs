@@ -59,8 +59,8 @@ pub use observability::{
 #[cfg(feature = "opentelemetry")]
 pub use opentelemetry_integration::{exception_to_otel_attributes, record_otel_exception};
 pub use protocol::{
-    CycleRecord, ENVELOPE_SCHEMA_ID, ENVELOPE_SCHEMA_VERSION, EnvelopeNode, ExceptionRecord,
-    TruncationMarker,
+    CycleRecord, ENVELOPE_SCHEMA_ID, ENVELOPE_SCHEMA_VERSION, EnvelopeNode, EnvelopeNodeKind,
+    ExceptionRecord, TruncationMarker,
 };
 pub use redaction::{
     fingerprint, redact_if_url, redact_secret, redact_url, redact_urls_in_text, remove_secret,
