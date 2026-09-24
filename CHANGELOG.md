@@ -6,6 +6,11 @@ The project follows semantic versioning. Pre-release versions may contain API ch
 
 ## [Unreleased]
 
+## [0.1.0-beta.1] - 2026-09-24
+
+First public beta. This release moves the crate from alpha iteration into a
+SemVer-checked beta line while preserving envelope schema 1.0.0.
+
 ### Added
 
 - full envelope protocol reader for ordinary exception, cycle, and truncation nodes;
@@ -14,6 +19,13 @@ The project follows semantic versioning. Pre-release versions may contain API ch
 - typed envelope inspection accessors for node kind, identity, failure metadata, chaining, and group members;
 - forward-compatibility tests for additive future 1.x fields at root, nested cause, failure metadata, and group-member levels;
 - beta migration guidance and an explicit envelope protocol stability policy.
+
+### Compatibility
+
+- Rust public API changes are now checked against the latest release tag with `cargo-semver-checks`;
+- envelope schema version remains `1.0.0`;
+- additive unknown fields on ordinary 1.x records remain forward-compatible;
+- cycle and truncation marker shapes remain strict.
 
 
 ## [0.1.0-alpha.2] - 2026-09-23
