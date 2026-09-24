@@ -8,6 +8,7 @@ on:
         required: true
 
 permissions:
+  attestations: write
   contents: write
   id-token: write
 
@@ -63,6 +64,22 @@ jobs:
       - name: Dry-run publish
         run: cargo publish --dry-run
 
+      - name: Build release package
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo package
+          crate="target/package/dataexcept-$VERSION.crate"
+          test -f "$crate"
+          sha256sum "$crate" > "$crate.sha256"
+
+      - name: Attest release package
+        uses: actions/attest@v4
+        with:
+          subject-path: target/package/dataexcept-${{ inputs.version }}.crate
+
       - name: Authenticate with crates.io
         id: auth
         uses: rust-lang/crates-io-auth-action@v1
@@ -92,7 +109,10 @@ jobs:
         run: |
           set -euo pipefail
           tag="v$VERSION"
+          crate="target/package/dataexcept-$VERSION.crate"
           gh release create "$tag" \
+            "$crate" \
+            "$crate.sha256" \
             --prerelease \
             --title "$tag" \
             --generate-notes
