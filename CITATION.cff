@@ -1,0 +1,12 @@
+cff-version: 1.2.0
+message: "If you use dataexcept-rs in research or software, please cite this repository."
+title: "dataexcept-rs"
+type: software
+authors:
+  - family-names: Ribeiro
+    given-names: Diogo
+repository-code: "https://github.com/DiogoRibeiro7/dataexcept-rs"
+url: "https://crates.io/crates/dataexcept"
+license: MIT
+version: 0.1.0-beta.1
+date-released: 2026-09-24
