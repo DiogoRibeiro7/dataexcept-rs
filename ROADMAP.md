@@ -48,7 +48,7 @@
 - [x] Validate canonical Python reference fixtures in Rust
 - [x] Add typed accessors for common transport inspection patterns
 - [x] Add compatibility tests against future 1.x schema additions
-- [ ] Prepare beta migration guide and protocol stability notes
+- [x] Prepare beta migration guide and protocol stability notes
 
 ## Compatibility policy
 

@@ -52,3 +52,12 @@ features for semantic-version compatibility.
 
 Before preparing `0.1.0-beta.1`, make sure the latest alpha release has a
 matching Git tag because that tag becomes the beta baseline.
+
+Before publishing the first beta:
+
+- review [BETA_MIGRATION.md](BETA_MIGRATION.md);
+- confirm [PROTOCOL_STABILITY.md](PROTOCOL_STABILITY.md) still matches the
+  canonical envelope schema;
+- run the full CI suite with the beta version in `Cargo.toml`;
+- require the SemVer compatibility job to pass against the latest release tag;
+- ensure the changelog documents every public API migration.
