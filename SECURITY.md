@@ -34,3 +34,19 @@ Security reports are especially relevant for:
 
 Please do not include live credentials, tokens, private URLs, or production data
 in any report.
+
+## Dependency and supply-chain checks
+
+The repository runs `cargo-deny` in GitHub Actions.
+
+Blocking checks cover:
+
+- disallowed or unrecognized licenses;
+- wildcard dependency declarations;
+- unknown registries;
+- unknown Git dependency sources;
+- dependency policy violations.
+
+Advisory checks run separately and are currently non-blocking so a newly
+published upstream advisory does not unexpectedly block every pull request.
+They remain visible in CI and should be reviewed promptly.
