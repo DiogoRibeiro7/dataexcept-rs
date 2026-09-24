@@ -7,27 +7,27 @@ Rust implementation of the **DataExcept** structured error and failure-observabi
 
 The project is a companion to the Python [DataExcept](https://github.com/DiogoRibeiro7/DataExcept) package. It is not a line-by-line port. The Rust API remains idiomatic while preserving the language-neutral failure metadata and serialized error-envelope contract used across service and process boundaries.
 
-> **Status:** experimental alpha. APIs may change before the first stable release.
+> **Status:** public beta. The API is now under SemVer compatibility checks while the crate remains pre-1.0.
 
 ## Installation
 
-For the alpha release:
+For the beta release:
 
 ```toml
 [dependencies]
-dataexcept = "0.1.0-alpha.2"
+dataexcept = "0.1.0-beta.1"
 ```
 
 Optional observability integrations are feature-gated:
 
 ```toml
 [dependencies]
-dataexcept = { version = "0.1.0-alpha.2", features = ["tracing", "opentelemetry", "sentry"] }
+dataexcept = { version = "0.1.0-beta.1", features = ["tracing", "opentelemetry", "sentry"] }
 ```
 
 ## Current scope
 
-The alpha includes:
+The beta includes:
 
 - transient, permanent, and unknown failure classification;
 - retryability and optional retry-after metadata;
