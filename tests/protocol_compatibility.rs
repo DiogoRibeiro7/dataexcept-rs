@@ -120,3 +120,43 @@ fn reserializes_reference_fixture_without_losing_protocol_shape() {
 
     assert_eq!(value["cause"]["cause"]["cycle"], true);
 }
+
+#[test]
+fn accepts_additive_future_fields_recursively() {
+    let node = parse_fixture(
+        "future-envelope-1.x",
+        include_str!("fixtures/future-envelope-1.x.json"),
+    );
+
+    assert_eq!(node.error_type(), Some("FutureError"));
+    assert_eq!(node.message(), Some("future-compatible payload"));
+
+    let failure = node
+        .failure()
+        .expect("failure metadata should remain readable");
+    assert_eq!(failure.retryable, Some(true));
+    assert_eq!(failure.retry_after_seconds, Some(1.5));
+
+    let cause = node
+        .cause()
+        .and_then(EnvelopeNode::as_exception)
+        .expect("nested cause should remain readable");
+    assert_eq!(cause.error_type, "NestedFutureError");
+
+    let members = node
+        .exceptions()
+        .expect("group members should remain readable");
+    assert_eq!(members.len(), 1);
+    assert_eq!(members[0].error_type(), Some("GroupMember"));
+}
+
+#[test]
+fn future_compatibility_does_not_relax_marker_shapes() {
+    assert!(
+        EnvelopeNode::from_json(
+            r#"{"type":"E","module":"m","message":"x","cycle":true,"future":1}"#
+        )
+        .is_err()
+    );
+    assert!(EnvelopeNode::from_json(r#"{"truncated":true,"future":1}"#).is_err());
+}

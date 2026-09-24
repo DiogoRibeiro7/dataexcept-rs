@@ -1,0 +1,31 @@
+{
+  "type": "FutureError",
+  "module": "future.module",
+  "message": "future-compatible payload",
+  "future_root_field": {
+    "producer_version": "1.1.0"
+  },
+  "failure": {
+    "kind": "transient",
+    "retryable": true,
+    "retry_after_seconds": 1.5,
+    "future_failure_field": "ignored"
+  },
+  "attributes": {
+    "field": "value"
+  },
+  "cause": {
+    "type": "NestedFutureError",
+    "module": "future.module",
+    "message": "nested future field",
+    "future_nested_field": 42
+  },
+  "exceptions": [
+    {
+      "type": "GroupMember",
+      "module": "future.module",
+      "message": "member",
+      "future_member_field": true
+    }
+  ]
+}
