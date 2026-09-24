@@ -1,6 +1,10 @@
 # dataexcept-rs
 
+[![Crates.io](https://img.shields.io/crates/v/dataexcept.svg)](https://crates.io/crates/dataexcept)
+[![docs.rs](https://docs.rs/dataexcept/badge.svg)](https://docs.rs/dataexcept)
+[![MSRV](https://img.shields.io/badge/MSRV-1.85-blue.svg)](https://www.rust-lang.org/)
 [![CI](https://github.com/DiogoRibeiro7/dataexcept-rs/actions/workflows/ci.yml/badge.svg)](https://github.com/DiogoRibeiro7/dataexcept-rs/actions/workflows/ci.yml)
+[![Supply Chain](https://github.com/DiogoRibeiro7/dataexcept-rs/actions/workflows/supply-chain.yml/badge.svg)](https://github.com/DiogoRibeiro7/dataexcept-rs/actions/workflows/supply-chain.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 Rust implementation of the **DataExcept** structured error and failure-observability model.
@@ -136,7 +140,7 @@ cargo test --all-features
 cargo doc --no-deps --all-features
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), [BETA_MIGRATION.md](BETA_MIGRATION.md), and [PROTOCOL_STABILITY.md](PROTOCOL_STABILITY.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md), [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), [BETA_MIGRATION.md](BETA_MIGRATION.md), [PROTOCOL_STABILITY.md](PROTOCOL_STABILITY.md), and [CITATION.cff](CITATION.cff).
 
 ## License
 
