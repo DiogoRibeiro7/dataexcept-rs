@@ -61,3 +61,29 @@ Before publishing the first beta:
 - run the full CI suite with the beta version in `Cargo.toml`;
 - require the SemVer compatibility job to pass against the latest release tag;
 - ensure the changelog documents every public API migration.
+
+## Release provenance
+
+The release workflow packages the crate before publication and generates a
+SHA-256 checksum for the exact `.crate` archive.
+
+It also creates a signed GitHub build-provenance attestation with
+`actions/attest@v4`.
+
+After crates.io publication succeeds, the GitHub prerelease contains:
+
+- `dataexcept-<version>.crate`;
+- `dataexcept-<version>.crate.sha256`.
+
+The package attestation can be verified with the GitHub CLI:
+
+```bash
+gh attestation verify dataexcept-<version>.crate \
+  --repo DiogoRibeiro7/dataexcept-rs
+```
+
+The checksum can be verified with:
+
+```bash
+sha256sum --check dataexcept-<version>.crate.sha256
+```
