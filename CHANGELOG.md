@@ -11,7 +11,8 @@ The project follows semantic versioning. Pre-release versions may contain API ch
 - full envelope protocol reader for ordinary exception, cycle, and truncation nodes;
 - public envelope schema ID and version constants;
 - canonical Python reference fixtures exercised directly by Rust compatibility tests;
-- typed envelope inspection accessors for node kind, identity, failure metadata, chaining, and group members.
+- typed envelope inspection accessors for node kind, identity, failure metadata, chaining, and group members;
+- forward-compatibility tests for additive future 1.x fields at root, nested cause, failure metadata, and group-member levels.
 
 
 ## [0.1.0-alpha.2] - 2026-09-23
