@@ -1,0 +1,30 @@
+name: Question
+description: Ask about usage, integration, or documented behaviour
+title: "[Question]: "
+labels: []
+body:
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: What are you trying to understand or implement?
+    validations:
+      required: true
+
+  - type: textarea
+    id: context
+    attributes:
+      label: Context
+      description: Include relevant code, payloads, versions, or integration details.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked the README and existing documentation first.
+          required: true
+        - label: This is not a security vulnerability report.
+          required: true

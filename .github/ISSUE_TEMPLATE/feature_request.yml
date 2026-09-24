@@ -1,0 +1,53 @@
+name: Feature request
+description: Propose a focused addition or improvement
+title: "[Feature]: "
+labels: []
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What concrete problem or limitation are you trying to solve?
+    validations:
+      required: true
+
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+      description: Describe the API, behaviour, or workflow you would like to add or change.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Rust public API
+        - Envelope protocol / interoperability
+        - Observability
+        - Domain errors
+        - Tooling / CI / release
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Mention alternatives or workarounds you considered.
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: compatibility
+    attributes:
+      label: Compatibility
+      options:
+        - label: I considered whether this changes the serialized envelope contract.
+          required: true
+        - label: I considered whether this would be a breaking Rust API change.
+          required: true
