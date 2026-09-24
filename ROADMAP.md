@@ -46,7 +46,7 @@
 - [x] Expose envelope schema ID and version constants
 - [x] Parse the full envelope union: exception, cycle, and truncation nodes
 - [x] Validate canonical Python reference fixtures in Rust
-- [ ] Add typed accessors for common transport inspection patterns
+- [x] Add typed accessors for common transport inspection patterns
 - [ ] Add compatibility tests against future 1.x schema additions
 - [ ] Prepare beta migration guide and protocol stability notes
 

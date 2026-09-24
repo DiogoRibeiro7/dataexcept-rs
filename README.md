@@ -97,11 +97,14 @@ let payload = r#"{"truncated":true}"#;
 let node = EnvelopeNode::from_json(payload).expect("valid DataExcept envelope");
 
 assert!(node.is_truncated());
+assert_eq!(node.error_type(), None);
 ```
 
 The protocol reader understands ordinary exception records, cycle records, and
 truncation markers. Marker shapes are strict, while ordinary 1.x records ignore
-unknown fields for forward compatibility.
+unknown fields for forward compatibility. Common inspection methods expose the
+node kind, identity, failure metadata, chaining, and group members without
+requiring callers to destructure the transport enum.
 
 ## Runnable examples
 
