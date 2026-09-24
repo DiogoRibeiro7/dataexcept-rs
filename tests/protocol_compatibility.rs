@@ -131,7 +131,9 @@ fn accepts_additive_future_fields_recursively() {
     assert_eq!(node.error_type(), Some("FutureError"));
     assert_eq!(node.message(), Some("future-compatible payload"));
 
-    let failure = node.failure().expect("failure metadata should remain readable");
+    let failure = node
+        .failure()
+        .expect("failure metadata should remain readable");
     assert_eq!(failure.retryable, Some(true));
     assert_eq!(failure.retry_after_seconds, Some(1.5));
 
@@ -141,7 +143,9 @@ fn accepts_additive_future_fields_recursively() {
         .expect("nested cause should remain readable");
     assert_eq!(cause.error_type, "NestedFutureError");
 
-    let members = node.exceptions().expect("group members should remain readable");
+    let members = node
+        .exceptions()
+        .expect("group members should remain readable");
     assert_eq!(members.len(), 1);
     assert_eq!(members[0].error_type(), Some("GroupMember"));
 }
