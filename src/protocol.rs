@@ -139,6 +139,18 @@ impl<'de> Deserialize<'de> for TrueMarker {
     }
 }
 
+/// High-level kind of an envelope node.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum EnvelopeNodeKind {
+    /// A fully rendered exception record.
+    Exception,
+    /// A cycle marker.
+    Cycle,
+    /// A depth-truncation marker.
+    Truncated,
+}
+
 /// Any node permitted by the `DataExcept` envelope protocol.
 #[derive(Debug, Clone, PartialEq, Serialize)]
 #[serde(untagged)]
@@ -153,6 +165,90 @@ pub enum EnvelopeNode {
 }
 
 impl EnvelopeNode {
+    /// Returns the high-level node kind.
+    #[must_use]
+    pub const fn kind(&self) -> EnvelopeNodeKind {
+        match self {
+            Self::Exception(_) => EnvelopeNodeKind::Exception,
+            Self::Cycle(_) => EnvelopeNodeKind::Cycle,
+            Self::Truncated(_) => EnvelopeNodeKind::Truncated,
+        }
+    }
+
+    /// Returns whether this is a full exception record.
+    #[must_use]
+    pub const fn is_exception(&self) -> bool {
+        matches!(self, Self::Exception(_))
+    }
+
+    /// Returns whether this is a cycle marker.
+    #[must_use]
+    pub const fn is_cycle(&self) -> bool {
+        matches!(self, Self::Cycle(_))
+    }
+
+    /// Returns the shared error type for exception and cycle nodes.
+    #[must_use]
+    pub fn error_type(&self) -> Option<&str> {
+        match self {
+            Self::Exception(record) => Some(&record.error_type),
+            Self::Cycle(record) => Some(&record.error_type),
+            Self::Truncated(_) => None,
+        }
+    }
+
+    /// Returns the shared module for exception and cycle nodes.
+    #[must_use]
+    pub fn module(&self) -> Option<&str> {
+        match self {
+            Self::Exception(record) => Some(&record.module),
+            Self::Cycle(record) => Some(&record.module),
+            Self::Truncated(_) => None,
+        }
+    }
+
+    /// Returns the shared message for exception and cycle nodes.
+    #[must_use]
+    pub fn message(&self) -> Option<&str> {
+        match self {
+            Self::Exception(record) => Some(&record.message),
+            Self::Cycle(record) => Some(&record.message),
+            Self::Truncated(_) => None,
+        }
+    }
+
+    /// Returns structured attributes for a full exception record.
+    #[must_use]
+    pub fn attributes(&self) -> Option<&BTreeMap<String, Value>> {
+        self.as_exception().and_then(|record| record.attributes.as_ref())
+    }
+
+    /// Returns failure metadata for a full exception record.
+    #[must_use]
+    pub fn failure(&self) -> Option<&FailureMetadata> {
+        self.as_exception().and_then(|record| record.failure.as_ref())
+    }
+
+    /// Returns the explicit cause for a full exception record.
+    #[must_use]
+    pub fn cause(&self) -> Option<&EnvelopeNode> {
+        self.as_exception().and_then(|record| record.cause.as_deref())
+    }
+
+    /// Returns the implicit context for a full exception record.
+    #[must_use]
+    pub fn context(&self) -> Option<&EnvelopeNode> {
+        self.as_exception()
+            .and_then(|record| record.context.as_deref())
+    }
+
+    /// Returns grouped child nodes for a full exception record.
+    #[must_use]
+    pub fn exceptions(&self) -> Option<&[EnvelopeNode]> {
+        self.as_exception()
+            .and_then(|record| record.exceptions.as_deref())
+    }
+
     /// Parses a JSON envelope node.
     ///
     /// Marker nodes are exact. Ordinary exception records accept unknown
@@ -254,7 +350,8 @@ impl<'de> Deserialize<'de> for EnvelopeNode {
 #[cfg(test)]
 mod tests {
     use super::{
-        CycleRecord, ENVELOPE_SCHEMA_ID, ENVELOPE_SCHEMA_VERSION, EnvelopeNode, TruncationMarker,
+        CycleRecord, ENVELOPE_SCHEMA_ID, ENVELOPE_SCHEMA_VERSION, EnvelopeNode, EnvelopeNodeKind,
+        TruncationMarker,
     };
 
     #[test]
@@ -270,6 +367,36 @@ mod tests {
         assert!(exception.as_exception().is_some());
         assert!(cycle.as_cycle().is_some());
         assert!(truncated.is_truncated());
+    }
+
+    #[test]
+    fn exposes_typed_inspection_accessors() {
+        let exception = EnvelopeNode::from_json(
+            r#"{"type":"E","module":"m","message":"x","failure":{"kind":"unknown","retryable":null,"retry_after_seconds":null},"cause":{"truncated":true},"exceptions":[{"type":"Child","module":"m","message":"y"}]}"#,
+        )
+        .expect("exception record should parse");
+
+        assert_eq!(exception.kind(), EnvelopeNodeKind::Exception);
+        assert!(exception.is_exception());
+        assert!(!exception.is_cycle());
+        assert_eq!(exception.error_type(), Some("E"));
+        assert_eq!(exception.module(), Some("m"));
+        assert_eq!(exception.message(), Some("x"));
+        assert!(exception.failure().is_some());
+        assert!(exception.cause().is_some_and(EnvelopeNode::is_truncated));
+        assert_eq!(exception.exceptions().map(<[EnvelopeNode]>::len), Some(1));
+
+        let cycle = EnvelopeNode::from(CycleRecord::new("E", "m", "x"));
+        assert_eq!(cycle.kind(), EnvelopeNodeKind::Cycle);
+        assert!(cycle.is_cycle());
+        assert_eq!(cycle.error_type(), Some("E"));
+        assert!(cycle.failure().is_none());
+        assert!(cycle.cause().is_none());
+
+        let truncated = EnvelopeNode::from(TruncationMarker::new());
+        assert_eq!(truncated.kind(), EnvelopeNodeKind::Truncated);
+        assert_eq!(truncated.error_type(), None);
+        assert_eq!(truncated.message(), None);
     }
 
     #[test]
