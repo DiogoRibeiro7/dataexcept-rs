@@ -136,7 +136,7 @@ cargo test --all-features
 cargo doc --no-deps --all-features
 ```
 
-See [CONTRIBUTING.md](CONTRIBUTING.md), [ROADMAP.md](ROADMAP.md), and [CHANGELOG.md](CHANGELOG.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md), [ROADMAP.md](ROADMAP.md), [CHANGELOG.md](CHANGELOG.md), [BETA_MIGRATION.md](BETA_MIGRATION.md), and [PROTOCOL_STABILITY.md](PROTOCOL_STABILITY.md).
 
 ## License
 
