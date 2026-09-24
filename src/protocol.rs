@@ -220,19 +220,22 @@ impl EnvelopeNode {
     /// Returns structured attributes for a full exception record.
     #[must_use]
     pub fn attributes(&self) -> Option<&BTreeMap<String, Value>> {
-        self.as_exception().and_then(|record| record.attributes.as_ref())
+        self.as_exception()
+            .and_then(|record| record.attributes.as_ref())
     }
 
     /// Returns failure metadata for a full exception record.
     #[must_use]
     pub fn failure(&self) -> Option<&FailureMetadata> {
-        self.as_exception().and_then(|record| record.failure.as_ref())
+        self.as_exception()
+            .and_then(|record| record.failure.as_ref())
     }
 
     /// Returns the explicit cause for a full exception record.
     #[must_use]
     pub fn cause(&self) -> Option<&EnvelopeNode> {
-        self.as_exception().and_then(|record| record.cause.as_deref())
+        self.as_exception()
+            .and_then(|record| record.cause.as_deref())
     }
 
     /// Returns the implicit context for a full exception record.
