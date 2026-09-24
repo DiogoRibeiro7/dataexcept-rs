@@ -1,0 +1,81 @@
+name: Bug report
+description: Report reproducible incorrect behaviour in dataexcept-rs
+title: "[Bug]: "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please provide a minimal reproduction where possible.
+
+  - type: input
+    id: version
+    attributes:
+      label: dataexcept version
+      description: The crate version where you observed the problem.
+      placeholder: 0.1.0-beta.1
+    validations:
+      required: true
+
+  - type: input
+    id: rust
+    attributes:
+      label: Rust version
+      description: Output of `rustc --version`.
+      placeholder: rustc 1.98.1
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Core error model
+        - Envelope protocol
+        - Failure metadata
+        - Redaction
+        - Boundary adapters
+        - Observability integration
+        - Domain errors
+        - Build / CI / packaging
+        - Documentation
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Describe the observed behaviour and what you expected instead.
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Minimal reproduction
+      description: Include the smallest code sample, payload, or steps that reproduce the issue.
+      render: rust
+    validations:
+      required: false
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Relevant output
+      description: Paste relevant compiler, test, or runtime output. Remove secrets first.
+      render: text
+    validations:
+      required: false
+
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checklist
+      options:
+        - label: I checked existing issues for duplicates.
+          required: true
+        - label: I removed credentials and other sensitive data from the report.
+          required: true
