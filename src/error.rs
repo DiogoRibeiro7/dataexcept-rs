@@ -125,7 +125,10 @@ mod tests {
         assert_eq!(error.code(), "missing_column");
         assert_eq!(error.message(), "customer_id is required");
         assert_eq!(error.module(), "pipeline::validation");
-        assert_eq!(error.attributes().get("column"), Some(&json!("customer_id")));
+        assert_eq!(
+            error.attributes().get("column"),
+            Some(&json!("customer_id"))
+        );
         assert_eq!(error.failure(), &FailureMetadata::permanent());
     }
 
