@@ -84,8 +84,14 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cargo cyclonedx             --all-features             --format json             --spec-version 1.5             --override-filename "dataexcept-$VERSION.cdx"
-          test -f "dataexcept-$VERSION.cdx.json"
+          cargo cyclonedx \
+            --all-features \
+            --format json \
+            --spec-version 1.5 \
+            --override-filename "dataexcept-$VERSION.cdx"
+          sbom="dataexcept-$VERSION.cdx.json"
+          test -f "$sbom"
+          mv "$sbom" "target/package/$sbom"
 
       - name: Attest release package
         uses: actions/attest@v4
@@ -95,7 +101,7 @@ jobs:
       - name: Attest release SBOM
         uses: actions/attest@v4
         with:
-          subject-path: dataexcept-${{ inputs.version }}.cdx.json
+          subject-path: target/package/dataexcept-${{ inputs.version }}.cdx.json
 
       - name: Authenticate with crates.io
         id: auth
@@ -127,5 +133,11 @@ jobs:
           set -euo pipefail
           tag="v$VERSION"
           crate="target/package/dataexcept-$VERSION.crate"
-          sbom="dataexcept-$VERSION.cdx.json"
-          gh release create "$tag"             "$crate"             "$crate.sha256"             "$sbom"             --prerelease             --title "$tag"             --generate-notes
+          sbom="target/package/dataexcept-$VERSION.cdx.json"
+          gh release create "$tag" \
+            "$crate" \
+            "$crate.sha256" \
+            "$sbom" \
+            --prerelease \
+            --title "$tag" \
+            --generate-notes
