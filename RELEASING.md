@@ -32,6 +32,7 @@ The workflow:
 - runs formatting, Clippy, tests, and documentation;
 - lists the packaged files;
 - runs `cargo publish --dry-run`;
+- generates a CycloneDX SBOM for the release dependency graph;
 - authenticates to crates.io through GitHub OIDC;
 - publishes with `cargo publish`;
 - creates the matching annotated Git tag;
@@ -67,18 +68,27 @@ Before publishing the first beta:
 The release workflow packages the crate before publication and generates a
 SHA-256 checksum for the exact `.crate` archive.
 
-It also creates a signed GitHub build-provenance attestation with
-`actions/attest@v4`.
+It also creates a CycloneDX 1.5 SBOM for the release dependency graph and
+creates signed GitHub build-provenance attestations for both the crate archive
+and the SBOM.
 
 After crates.io publication succeeds, the GitHub prerelease contains:
 
 - `dataexcept-<version>.crate`;
-- `dataexcept-<version>.crate.sha256`.
+- `dataexcept-<version>.crate.sha256`;
+- `dataexcept-<version>.cdx.json`.
 
 The package attestation can be verified with the GitHub CLI:
 
 ```bash
 gh attestation verify dataexcept-<version>.crate \
+  --repo DiogoRibeiro7/dataexcept-rs
+```
+
+The SBOM attestation can be verified with:
+
+```bash
+gh attestation verify dataexcept-<version>.cdx.json \
   --repo DiogoRibeiro7/dataexcept-rs
 ```
 
