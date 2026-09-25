@@ -102,6 +102,19 @@ impl ErrorEnvelope {
         self
     }
 
+    /// Parses a normal error envelope from JSON.
+    ///
+    /// Use `EnvelopeNode::from_json` when the input may contain cycle or
+    /// truncation protocol markers.
+    ///
+    /// # Errors
+    ///
+    /// Returns a JSON error when the input is invalid or does not match the
+    /// normal error-envelope shape.
+    pub fn from_json(input: &str) -> Result<Self, serde_json::Error> {
+        serde_json::from_str(input)
+    }
+
     /// Serializes the envelope as strict JSON.
     ///
     /// # Errors
@@ -129,6 +142,21 @@ mod tests {
 
     use super::ErrorEnvelope;
     use crate::FailureMetadata;
+
+    #[test]
+    fn round_trips_through_json() {
+        let envelope = ErrorEnvelope::new(
+            "MissingColumnError",
+            "dataexcept::schema",
+            "missing required column customer_id",
+        )
+        .with_failure(FailureMetadata::permanent());
+
+        let json = envelope.to_json().expect("envelope should serialize");
+        let parsed = ErrorEnvelope::from_json(&json).expect("envelope should parse");
+
+        assert_eq!(parsed, envelope);
+    }
 
     #[test]
     fn serializes_required_fields_and_failure_metadata() {
