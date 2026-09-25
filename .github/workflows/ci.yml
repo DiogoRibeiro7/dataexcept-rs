@@ -19,6 +19,7 @@ jobs:
     uses: DiogoRibeiro7/git-actions-collection/.github/workflows/rust-ci.yml@v1
     with:
       all-features: true
+      locked: false
       run-compatibility: true
       compatibility-toolchains: '["1.85.0"]'
       compatibility-os: '["ubuntu-latest"]'
