@@ -67,6 +67,30 @@ impl DataError {
         &self.code
     }
 
+    /// Returns the redacted human-readable message.
+    #[must_use]
+    pub fn message(&self) -> &str {
+        &self.message
+    }
+
+    /// Returns the logical module or namespace.
+    #[must_use]
+    pub fn module(&self) -> &str {
+        &self.module
+    }
+
+    /// Returns the structured attributes.
+    #[must_use]
+    pub fn attributes(&self) -> &BTreeMap<String, Value> {
+        &self.attributes
+    }
+
+    /// Returns the failure metadata.
+    #[must_use]
+    pub fn failure(&self) -> &FailureMetadata {
+        &self.failure
+    }
+
     /// Converts the error into a transport-safe envelope.
     #[must_use]
     pub fn to_envelope(&self) -> ErrorEnvelope {
@@ -90,6 +114,20 @@ mod tests {
 
     use super::DataError;
     use crate::FailureMetadata;
+
+    #[test]
+    fn exposes_structured_fields_without_serialization() {
+        let error = DataError::new("missing_column", "customer_id is required")
+            .with_module("pipeline::validation")
+            .with_attribute("column", json!("customer_id"))
+            .with_failure(FailureMetadata::permanent());
+
+        assert_eq!(error.code(), "missing_column");
+        assert_eq!(error.message(), "customer_id is required");
+        assert_eq!(error.module(), "pipeline::validation");
+        assert_eq!(error.attributes().get("column"), Some(&json!("customer_id")));
+        assert_eq!(error.failure(), &FailureMetadata::permanent());
+    }
 
     #[test]
     fn converts_to_structured_envelope() {
