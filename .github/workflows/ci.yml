@@ -68,6 +68,12 @@ jobs:
       - name: Check Sentry feature
         run: cargo check --no-default-features --features sentry
 
+      - name: Install cargo-hack
+        uses: taiki-e/install-action@cargo-hack
+
+      - name: Check feature powerset
+        run: cargo hack check --feature-powerset --no-dev-deps
+
   package:
     name: Package validation
     runs-on: ubuntu-latest
