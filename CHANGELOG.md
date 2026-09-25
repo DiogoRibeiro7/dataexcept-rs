@@ -6,6 +6,31 @@ The project follows semantic versioning. Pre-release versions may contain API ch
 
 ## [Unreleased]
 
+## [0.1.0-beta.2] - 2026-09-25
+
+Second public beta focused on API ergonomics, protocol-boundary validation,
+feature-combination coverage, and release supply-chain metadata.
+
+### Added
+
+- read-only `DataError` accessors for message, module, attributes, and failure metadata;
+- idiomatic `DataError -> ErrorEnvelope` conversions for owned and borrowed values;
+- direct `DataError -> EnvelopeNode` conversions for protocol-boundary code;
+- `ErrorEnvelope::from_json()` for parsing normal error-envelope JSON;
+- CycloneDX SBOM generation and attestation in the release workflow;
+- CI coverage for the optional-feature powerset with `cargo-hack`.
+
+### Fixed
+
+- `FailureMetadata` now validates retry-delay invariants during JSON deserialization,
+  preventing invalid negative or non-finite retry delays from bypassing constructor checks.
+
+### Compatibility
+
+- envelope schema version remains `1.0.0`;
+- the new APIs are additive within the beta line;
+- SemVer compatibility checks remain enforced against the latest release tag.
+
 ## [0.1.0-beta.1] - 2026-09-24
 
 First public beta. This release moves the crate from alpha iteration into a
