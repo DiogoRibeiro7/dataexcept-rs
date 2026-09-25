@@ -35,6 +35,9 @@ jobs:
       - name: Cache Cargo
         uses: Swatinem/rust-cache@v2
 
+      - name: Install SBOM generator
+        run: cargo install cargo-cyclonedx --version 0.5.9 --locked
+
       - name: Verify release version
         shell: bash
         run: |
@@ -75,10 +78,24 @@ jobs:
           test -f "$crate"
           sha256sum "$crate" > "$crate.sha256"
 
+      - name: Generate CycloneDX SBOM
+        env:
+          VERSION: ${{ inputs.version }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cargo cyclonedx             --all-features             --format json             --spec-version 1.5             --override-filename "dataexcept-$VERSION.cdx"
+          test -f "dataexcept-$VERSION.cdx.json"
+
       - name: Attest release package
         uses: actions/attest@v4
         with:
           subject-path: target/package/dataexcept-${{ inputs.version }}.crate
+
+      - name: Attest release SBOM
+        uses: actions/attest@v4
+        with:
+          subject-path: dataexcept-${{ inputs.version }}.cdx.json
 
       - name: Authenticate with crates.io
         id: auth
@@ -110,9 +127,5 @@ jobs:
           set -euo pipefail
           tag="v$VERSION"
           crate="target/package/dataexcept-$VERSION.crate"
-          gh release create "$tag" \
-            "$crate" \
-            "$crate.sha256" \
-            --prerelease \
-            --title "$tag" \
-            --generate-notes
+          sbom="dataexcept-$VERSION.cdx.json"
+          gh release create "$tag"             "$crate"             "$crate.sha256"             "$sbom"             --prerelease             --title "$tag"             --generate-notes
