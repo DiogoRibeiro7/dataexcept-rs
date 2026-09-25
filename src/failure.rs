@@ -1,6 +1,6 @@
 //! Machine-readable recovery metadata.
 
-use serde::{Deserialize, Serialize};
+use serde::{Deserialize, Deserializer, Serialize};
 use thiserror::Error;
 
 /// Classification of the underlying failure condition.
@@ -17,7 +17,7 @@ pub enum FailureKind {
 }
 
 /// Recovery-relevant metadata attached to an operational error.
-#[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Default)]
+#[derive(Debug, Clone, PartialEq, Serialize, Default)]
 pub struct FailureMetadata {
     /// Whether the failure is transient, permanent, or unclassified.
     pub kind: FailureKind,
@@ -83,6 +83,24 @@ impl FailureMetadata {
     }
 }
 
+impl<'de> Deserialize<'de> for FailureMetadata {
+    fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+    where
+        D: Deserializer<'de>,
+    {
+        #[derive(Deserialize)]
+        struct RawFailureMetadata {
+            kind: FailureKind,
+            retryable: Option<bool>,
+            retry_after_seconds: Option<f64>,
+        }
+
+        let raw = RawFailureMetadata::deserialize(deserializer)?;
+        Self::new(raw.kind, raw.retryable, raw.retry_after_seconds)
+            .map_err(serde::de::Error::custom)
+    }
+}
+
 /// Validation failure for [`FailureMetadata`].
 #[derive(Debug, Clone, Copy, PartialEq, Error)]
 pub enum InvalidFailureMetadata {
@@ -94,6 +112,27 @@ pub enum InvalidFailureMetadata {
 #[cfg(test)]
 mod tests {
     use super::{FailureKind, FailureMetadata};
+
+    #[test]
+    fn rejects_negative_retry_delay_during_deserialization() {
+        let result = serde_json::from_str::<FailureMetadata>(
+            r#"{"kind":"transient","retryable":true,"retry_after_seconds":-1.0}"#,
+        );
+
+        assert!(result.is_err());
+    }
+
+    #[test]
+    fn accepts_valid_retry_delay_during_deserialization() {
+        let metadata = serde_json::from_str::<FailureMetadata>(
+            r#"{"kind":"transient","retryable":true,"retry_after_seconds":2.5}"#,
+        )
+        .expect("valid failure metadata should deserialize");
+
+        assert_eq!(metadata.kind, FailureKind::Transient);
+        assert_eq!(metadata.retryable, Some(true));
+        assert_eq!(metadata.retry_after_seconds, Some(2.5));
+    }
 
     #[test]
     fn rejects_negative_retry_delay() {
