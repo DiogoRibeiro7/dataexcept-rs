@@ -19,14 +19,14 @@ For the beta release:
 
 ```toml
 [dependencies]
-dataexcept = "0.1.0-beta.1"
+dataexcept = "0.1.0-beta.2"
 ```
 
 Optional observability integrations are feature-gated:
 
 ```toml
 [dependencies]
-dataexcept = { version = "0.1.0-beta.1", features = ["tracing", "opentelemetry", "sentry"] }
+dataexcept = { version = "0.1.0-beta.2", features = ["tracing", "opentelemetry", "sentry"] }
 ```
 
 ## Current scope
