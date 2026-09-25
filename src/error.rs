@@ -100,6 +100,18 @@ impl DataError {
     }
 }
 
+impl From<&DataError> for ErrorEnvelope {
+    fn from(value: &DataError) -> Self {
+        value.to_envelope()
+    }
+}
+
+impl From<DataError> for ErrorEnvelope {
+    fn from(value: DataError) -> Self {
+        value.to_envelope()
+    }
+}
+
 impl fmt::Display for DataError {
     fn fmt(&self, formatter: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(formatter, "{}: {}", self.code, self.message)
@@ -130,6 +142,24 @@ mod tests {
             Some(&json!("customer_id"))
         );
         assert_eq!(error.failure(), &FailureMetadata::permanent());
+    }
+
+    #[test]
+    fn converts_by_reference_into_envelope() {
+        let error = DataError::new("missing_column", "customer_id is required");
+        let envelope = crate::ErrorEnvelope::from(&error);
+
+        assert_eq!(envelope.error_type, "missing_column");
+        assert_eq!(envelope.message, "customer_id is required");
+    }
+
+    #[test]
+    fn converts_owned_value_into_envelope() {
+        let error = DataError::new("missing_column", "customer_id is required");
+        let envelope = crate::ErrorEnvelope::from(error);
+
+        assert_eq!(envelope.error_type, "missing_column");
+        assert_eq!(envelope.message, "customer_id is required");
     }
 
     #[test]
