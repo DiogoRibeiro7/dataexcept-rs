@@ -5,7 +5,7 @@ use std::collections::BTreeMap;
 use serde::{Deserialize, Deserializer, Serialize};
 use serde_json::Value;
 
-use crate::{ErrorEnvelope, FailureMetadata};
+use crate::{DataError, ErrorEnvelope, FailureMetadata};
 
 /// Version of the language-neutral `DataExcept` envelope schema.
 pub const ENVELOPE_SCHEMA_VERSION: &str = "1.0.0";
@@ -298,6 +298,18 @@ impl EnvelopeNode {
     }
 }
 
+impl From<&DataError> for EnvelopeNode {
+    fn from(value: &DataError) -> Self {
+        Self::from(ErrorEnvelope::from(value))
+    }
+}
+
+impl From<DataError> for EnvelopeNode {
+    fn from(value: DataError) -> Self {
+        Self::from(ErrorEnvelope::from(value))
+    }
+}
+
 impl From<ErrorEnvelope> for EnvelopeNode {
     fn from(value: ErrorEnvelope) -> Self {
         Self::Exception(ExceptionRecord::from(value))
@@ -356,6 +368,21 @@ mod tests {
         CycleRecord, ENVELOPE_SCHEMA_ID, ENVELOPE_SCHEMA_VERSION, EnvelopeNode, EnvelopeNodeKind,
         TruncationMarker,
     };
+    use crate::DataError;
+
+    #[test]
+    fn converts_data_error_directly_into_protocol_node() {
+        let error = DataError::new("missing_column", "customer_id is required")
+            .with_module("pipeline::validation");
+
+        let borrowed = EnvelopeNode::from(&error);
+        let owned = EnvelopeNode::from(error);
+
+        assert_eq!(borrowed.error_type(), Some("missing_column"));
+        assert_eq!(borrowed.module(), Some("pipeline::validation"));
+        assert_eq!(owned.error_type(), Some("missing_column"));
+        assert_eq!(owned.message(), Some("customer_id is required"));
+    }
 
     #[test]
     fn parses_all_protocol_node_shapes() {
