@@ -14,8 +14,17 @@ env:
   RUSTFLAGS: "-Dwarnings"
 
 jobs:
-  check:
-    name: Format, lint, test
+  rust:
+    name: Shared Rust CI
+    uses: DiogoRibeiro7/git-actions-collection/.github/workflows/rust-ci.yml@v1
+    with:
+      all-features: true
+      run-compatibility: true
+      compatibility-toolchains: '["1.85.0"]'
+      compatibility-os: '["ubuntu-latest"]'
+
+  extras:
+    name: Documentation and examples
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,42 +32,15 @@ jobs:
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
-        with:
-          components: rustfmt, clippy
 
       - name: Cache Cargo
         uses: Swatinem/rust-cache@v2
-
-      - name: Check formatting
-        run: cargo fmt --all -- --check
-
-      - name: Clippy
-        run: cargo clippy --all-targets --all-features -- -D warnings
-
-      - name: Test
-        run: cargo test --all-features
 
       - name: Documentation
         run: cargo doc --no-deps --all-features
 
       - name: Check examples
         run: cargo check --examples --all-features
-
-  msrv:
-    name: MSRV 1.85
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Install Rust 1.85
-        uses: dtolnay/rust-toolchain@1.85.0
-
-      - name: Cache Cargo
-        uses: Swatinem/rust-cache@v2
-
-      - name: Check all features on MSRV
-        run: cargo check --all-features
 
   features:
     name: Optional feature matrix
