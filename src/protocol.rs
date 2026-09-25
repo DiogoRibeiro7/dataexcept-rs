@@ -369,7 +369,6 @@ mod tests {
         TruncationMarker,
     };
     use crate::DataError;
-    };
 
     #[test]
     fn converts_data_error_directly_into_protocol_node() {
