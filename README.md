@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="assets/project-logo.png" alt="dataexcept-rs project logo" width="160" height="160">
+</p>
+
 # dataexcept-rs
 
 [![Crates.io](https://img.shields.io/crates/v/dataexcept.svg)](https://crates.io/crates/dataexcept)
