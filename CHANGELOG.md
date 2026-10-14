@@ -6,6 +6,10 @@ The project follows semantic versioning. Pre-release versions may contain API ch
 
 ## [Unreleased]
 
+### Fixed
+
+- Reject unsafe ASCII control bytes in future-version W3C `traceparent` extensions and optional `tracestate`/`baggage` values before forwarding. HTTP horizontal tabs remain allowed in optional header values.
+
 ## [0.1.0-beta.2] - 2026-09-25
 
 Second public beta focused on API ergonomics, protocol-boundary validation,
