@@ -131,14 +131,19 @@ pub enum TraceContextConflict {
 ///
 /// Version `00` must use the exact 55-character format. Higher versions are
 /// accepted when the mandatory prefix is valid; opaque extension data remains
-/// verbatim. Invalid identifiers are never replaced with generated values.
+/// verbatim only when it is safe to forward as an HTTP header. Invalid
+/// identifiers are never replaced with generated values.
 #[must_use]
 pub fn parse_traceparent(
     value: &str,
     tracestate: Option<&str>,
     baggage: Option<&str>,
 ) -> Option<W3CTraceContext> {
-    if !value.is_ascii() || value.trim() != value || value.len() < 55 {
+    if !value.is_ascii()
+        || value.trim() != value
+        || value.len() < 55
+        || value.bytes().any(|byte| byte.is_ascii_control())
+    {
         return None;
     }
 
@@ -240,7 +245,11 @@ fn version_shape_is_valid(value: &str, version: &str) -> bool {
 
 fn safe_optional_header(value: Option<&str>) -> Option<String> {
     value
-        .filter(|value| !value.contains('\r') && !value.contains('\n'))
+        .filter(|value| {
+            !value
+                .bytes()
+                .any(|byte| byte.is_ascii_control() && byte != b'\t')
+        })
         .map(str::to_owned)
 }
 
@@ -300,6 +309,42 @@ mod tests {
 
         assert_eq!(trace.traceparent(), extended);
         assert_eq!(trace.version(), "01");
+    }
+
+    #[test]
+    fn future_traceparent_extensions_reject_unsafe_control_bytes() {
+        for suffix in ["\r\nx-forged: value", "\0", "\x7f", "\t"] {
+            let value = format!("01-{}-future{suffix}", &TRACEPARENT[3..]);
+
+            assert!(
+                parse_traceparent(&value, None, None).is_none(),
+                "unsafe traceparent accepted: {value:?}"
+            );
+        }
+    }
+
+    #[test]
+    fn optional_headers_reject_other_control_bytes() {
+        for unsafe_value in ["vendor=value\0", "vendor=value\x7f", "vendor=value\x01"] {
+            let trace = parse_traceparent(TRACEPARENT, Some(unsafe_value), Some(unsafe_value))
+                .expect("traceparent should remain valid");
+
+            assert_eq!(trace.tracestate(), None);
+            assert_eq!(trace.baggage(), None);
+        }
+    }
+
+    #[test]
+    fn optional_headers_preserve_horizontal_tabs() {
+        let trace = parse_traceparent(
+            TRACEPARENT,
+            Some("vendor=value,\tother=ok"),
+            Some("tenant=acme;\tfeature=on"),
+        )
+        .expect("traceparent should remain valid");
+
+        assert_eq!(trace.tracestate(), Some("vendor=value,\tother=ok"));
+        assert_eq!(trace.baggage(), Some("tenant=acme;\tfeature=on"));
     }
 
     #[test]
